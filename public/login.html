@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="kr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="./sytles/login.css">
+    <title>이민구</title>
+</head>
+<body>
+<div class="container">
+    <h2>로그인</h2>
+    <form id="loginForm">
+        <div class="input-group">
+            <label for="email">이메일</label>
+            <input type="email" placeholder="이메일을 입력하세요" id="email" name="email" required>
+            <small id="emailError" style="color: red; display: none;">* 올바른 이메일 주소를 입력해주세요</small>
+        </div>
+        <div class="input-group">
+            <label for="password">비밀번호</label>
+            <input type="password" placeholder="비밀번호를 입력하세요" id="password" name="password" required>
+            <small id="passwordError" style="color: red; display: none;">* 비밀번호는 8자 이상 20자 이하이며 대문자, 소문자, 숫자, 특수문자를 각각 최소 1개 포함해야 합니다.</small>
+        </div>
+        <button type="submit" id="loginButton" disabled>로그인</button>
+    </form>
+    <p>
+        <a href="./%08register.html" class="signup-link">회원가입</a>
+    </p>
+</div>
+
+<script>
+    const emailInput = document.getElementById("email");
+    const passwordInput = document.getElementById("password");
+    const loginButton = document.getElementById("loginButton");
+
+    const emailError = document.getElementById("emailError");
+    const passwordError = document.getElementById("passwordError");
+
+    function validateEmail() {
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (emailInput.value === "") {
+            emailError.style.display = "none"; // 비어있을 경우 오류 메시지 숨김
+            return false;
+        }
+        if (!emailPattern.test(emailInput.value)) {
+            emailError.style.display = "block";
+            return false;
+        } else {
+            emailError.style.display = "none";
+            return true;
+        }
+    }
+
+    function validatePassword() {
+        const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/;
+        if (passwordInput.value === "") {
+            passwordError.style.display = "none"; // 비어있을 경우 오류 메시지 숨김
+            return false;
+        }
+        if (!passwordPattern.test(passwordInput.value)) {
+            passwordError.style.display = "block";
+            return false;
+        } else {
+            passwordError.style.display = "none";
+            return true;
+        }
+    }
+
+    function checkFormValidity() {
+        const isEmailValid = validateEmail();
+        const isPasswordValid = validatePassword();
+
+        const formIsValid = isEmailValid && isPasswordValid;
+
+        loginButton.disabled = !formIsValid; // 버튼 활성화/비활성화
+    }
+
+    emailInput.addEventListener("input", function() {
+        validateEmail();
+        checkFormValidity();
+    });
+
+    passwordInput.addEventListener("input", function() {
+        validatePassword();
+        checkFormValidity();
+    });
+</script>
+</body>
+</html>

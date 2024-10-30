@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="kr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="./sytles/detail.css">
+  <title>게시글 상세 보기</title>
+</head>
+<body>
+<div id="header-container"></div>
+
+
+<div class="container">
+  <div class="header">
+    <h1 id="postTitle">게시글 제목</h1>
+    <div class="button-container">
+      <span id="postUsername">작성자 이름</span>
+      <span id="postDate">작성일자</span>
+      <div>
+        <a class="edit-button" id="editButton" href="">수정</a>
+        <a class="delete-button" onclick="showModal()">삭제</a>
+      </div>
+    </div>
+    <div class="horizontal-rule"></div>
+  </div>
+
+  <div class="content">
+    <img id="postImage" src="" alt="게시글 이미지" style="width: 300px; height: auto; display: block; margin: 0 auto;">
+    <p id="postContent">게시글 내용이 여기에 표시됩니다.</p>
+    <p>추천수: <span id="postLike">0</span>, 방문자 수: <span id="postVisitor">0</span>, 댓글 수: <span id="postComment">0</span></p>
+  </div>
+
+  <div class="horizontal-rule"></div>
+
+  <div class="comment-section">
+    <h2>댓글</h2>
+    <div id="commentList">
+      <!-- 댓글 리스트가 여기에 추가됩니다. -->
+    </div>
+    <div class="comment-form">
+      <textarea id="commentInput" placeholder="댓글을 작성하세요..." rows="3"></textarea>
+      <button onclick="submitComment()">댓글 작성</button>
+    </div>
+  </div>
+</div>
+
+<!-- 모달 추가 -->
+<div id="deleteModal" class="modal">
+  <div class="modal-content">
+    <span class="close" onclick="closeModal()">&times;</span>
+    <p>정말로 게시글을 삭제하시겠습니까?</p>
+    <button id="cancelButton" onclick="closeModal()">취소</button>
+    <button id="confirmButton" onclick="confirmDelete()">확인</button>
+  </div>
+</div>
+
+<script src="./js/detail.js"></script>
+
+<script>
+  //<div id="header-container"></div>
+  fetch('./components/header.html')
+          .then(response => response.text())
+          .then(data => {
+            document.getElementById('header-container').innerHTML = data;
+          })
+          .catch(error => console.error('Error loading header:', error));
+</script>
+
+</body>
+
+</html>
+
+
+
+
