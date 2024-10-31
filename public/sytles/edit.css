@@ -6,8 +6,8 @@ body {
     margin: 0; /* 기본 여백 제거 */
     display: flex; /* Flexbox를 사용하여 중앙 정렬 */
     justify-content: center; /* 수평 중앙 정렬 */
-    align-items: center; /* 수직 중앙 정렬 */
-    height: 100vh; /* 전체 화면 높이 사용 */
+     /* 수직 중앙 정렬 */
+    height: auto; /* 전체 화면 높이 사용 */
 }
 
 
@@ -17,8 +17,9 @@ body {
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     width: 400px;
-    margin: 50px auto; /* 페이지 중앙 정렬 */
+    margin: 10px auto; /* 페이지 중앙 정렬 */
     text-align: center;
+    max-height: 90vh;
 }
 
 h1 {

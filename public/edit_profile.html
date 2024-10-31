@@ -6,13 +6,7 @@
     <link rel="stylesheet" type="text/css" href="./sytles/edit_profile.css">
     <title>회원정보 수정</title>
     <style>
-        #preview {
-            width: 100%; /* 원형 크기에 맞춤 */
-            height: 100%; /* 원형 크기에 맞춤 */
-            object-fit: cover; /* 이미지 비율 유지 */
-            display: none; /* 기본적으로 숨김 */
-            border-radius: 50%; /* 원형 유지 */
-        }
+
     </style>
 </head>
 <body>
@@ -54,14 +48,20 @@
 
     function previewImage(event) {
         const file = event.target.files[0];
+        const previewCircle = document.querySelector('.circle');
+
         if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const preview = document.getElementById('preview');
-                preview.src = e.target.result;
-                preview.style.display = 'block'; // 이미지 표시
-            }
-            reader.readAsDataURL(file);
+            // 이미지가 선택된 경우
+            previewCircle.style.backgroundImage = `url(${URL.createObjectURL(file)})`;
+            previewCircle.style.backgroundSize = 'cover';
+            previewCircle.style.backgroundPosition = 'center';
+            previewCircle.style.backgroundColor = 'transparent'; // 배경색 투명하게 설정
+            previewCircle.querySelector('span').style.display = 'none';
+        } else {
+            // 이미지가 선택되지 않은 경우 (파일 입력이 비어있을 때)
+            previewCircle.style.backgroundImage = 'none'; // 미리보기 초기화
+            previewCircle.style.backgroundColor = '#D5C9DD'; // 기본 배경색으로 복원
+            previewCircle.querySelector('span').style.display = 'block'; // '+' 아이콘 보이기
         }
     }
 

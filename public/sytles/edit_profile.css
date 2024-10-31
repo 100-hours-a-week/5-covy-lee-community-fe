@@ -39,7 +39,7 @@ label {
     justify-content: center;
     align-items: center;
     position: relative;
-    height: 150px; /* 높이를 지정하여 원을 수직 가운데 배치 */
+    height: 150px; /* 높이 지정 */
 }
 
 .circle {
@@ -54,6 +54,7 @@ label {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    overflow: hidden; /* 이미지가 원형에 맞게 들어가도록 설정 */
 }
 
 .circle span {
@@ -64,16 +65,16 @@ label {
 }
 
 #preview {
-    border-radius: 50%;
-    width: 100px;
-    height: 100px;
-    object-fit: cover;
-    display: none; /* 기본적으로 숨김 처리 */
+    width: 100%; /* 원형 크기에 맞춤 */
+    height: 100%; /* 원형 크기에 맞춤 */
+    object-fit: cover; /* 이미지 비율 유지 */
+    display: none; /* 기본적으로 숨김 */
+    border-radius: 50%; /* 원형 유지 */
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    top: 0;
+    left: 0;
 }
+
 
 .signup-link {
     color: gray;
