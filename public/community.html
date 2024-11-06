@@ -3,16 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" type="text/css" href="./sytles/community.css">
+  <link rel="stylesheet" type="text/css" href="./styles/community.css">
   <title>커뮤니티 페이지</title>
 </head>
 <body>
-<div id="header-container"></div>
 
+<div id="header-container"></div>
 
 <div class="container">
   <div class="top-container">
-    <input type="text" id="searchInput" placeholder="검색..." class="search-input">
+    <input type="text" id="searchInput" placeholder="검색..." class="search-input" oninput="searchPosts()">
     <a href="./write.html" class="create-post-button">게시글 작성</a>
   </div>
   <div class="card-container" id="cardContainer">
@@ -26,15 +26,11 @@
 </div>
 
 <script src="./js/community.js"></script>
-<script>
-  // header.html 파일을 불러오는 함수
-  fetch('./components/header.html').then(response => response.text()).then(data => {
-            document.getElementById('header-container').innerHTML = data;
-          })
-          .catch(error => console.error('Error loading header:', error));
-</script>
+<script src="./js/utils.js"></script>
+
 </body>
 </html>
+
 
 
 

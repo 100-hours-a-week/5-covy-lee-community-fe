@@ -1,9 +1,11 @@
 body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f4; /* 배경색 */
-    height: 100vh;
+    min-height: 100vh; /* 최소 높이로 설정 */
     margin: 0;
+    overflow-y: hidden; /* 세로 스크롤을 숨기기 */
 }
+
 
 header h1 {
     margin: 0;
@@ -80,25 +82,41 @@ header {
     margin: 20px auto;
 }
 
-.card-container {
-    width: 40%;
-    margin: 20px auto 0;
-    background-color: #D5C9DD; /* 카드 컨테이너 배경색 */
+
+.top-container {
     display: flex;
-    height: 550px;
+    justify-content: space-between;
+    align-items: center;
+    margin: 0 auto 10px;
+    width: 620px;
+}
+
+.card-container {
+    margin: 5px auto 0;
+    display: flex;
     flex-direction: column;
     gap: 16px;
     padding: 20px;
+    background-color: transparent;
+    justify-content: flex-start; /* 카드가 상단부터 쌓이도록 */
+    align-items: center; /* 카드들을 가운데 정렬 */
+    max-height: 550px; /* 카드 컨테이너의 최대 높이 설정 */
+    overflow-y: auto; /* 카드가 컨테이너를 넘으면 스크롤이 생기도록 */
 }
 
+
 .card {
-    flex: 1;
+    width: 592px; /* 카드 너비 고정 */
+    height: 120px; /* 카드 높이 고정 */
+    flex: none; /* flexbox 크기 조정 방지 */
     padding: 16px;
     border: 1px solid #ddd;
     border-radius: 8px;
     background-color: #ffffff; /* 카드 배경색 흰색 */
     position: relative;
 }
+
+
 
 .card h3 {
     margin: 0 0 10px;
@@ -130,13 +148,13 @@ header {
     background-color: #505070; /* 호버 시 색상 변화 */
 }
 .pagination {
-    position: absolute;
-    bottom: 50px;
+    position: fixed; /* fixed로 변경하여 페이지 바닥에 고정 */
+    bottom: 20px; /* 페이지 바닥에서 20px 위에 위치 */
     left: 50%;
     transform: translateX(-50%);
     display: flex; /* 가로로 나열되도록 설정 */
     gap: 10px; /* 버튼 간의 간격 */
-    justify-content: space-between; /* 버튼 간의 간격을 균등하게 배치 */
+    justify-content: center; /* 버튼을 중앙에 배치 */
 }
 
 .pagination button {
@@ -151,6 +169,7 @@ header {
     transition: background-color 0.3s;
     font-size: 16px; /* 페이지 번호 크기 조정 */
 }
+
 
 
 .pagination button:hover:not(.disabled) {
@@ -203,13 +222,7 @@ header {
     margin-bottom: 10px;
 }
 
-.top-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin: 0 auto 10px;
-    width: 40%;
-}
+
 
 .search-input {
     flex: 1;

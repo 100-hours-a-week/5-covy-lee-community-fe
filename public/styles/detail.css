@@ -307,5 +307,31 @@ header {
     cursor: pointer;
 }
 
+.stats-container {
+    display: flex; /* flexbox를 사용하여 수평으로 정렬 */
+    justify-content: center; /* 가운데 정렬 */
+    margin-top: 10px; /* 상단 여백 */
+}
+
+.stat-box {
+    background-color: #f0f0f0; /* 배경색 */
+    border-radius: 10px; /* 둥근 모서리 */
+    padding: 10px; /* 내부 여백 */
+    margin: 0 10px; /* 항목 간격 */
+    text-align: center; /* 텍스트 가운데 정렬 */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* 그림자 효과 */
+    width: 80px; /* 고정 너비 */
+    height: 50px; /* 고정 높이 */
+}
+
+.stat-title {
+    font-size: 14px; /* 항목명 크기 */
+    margin-bottom: 5px; /* 항목명과 숫자 간격 */
+}
+
+.stat-value {
+    font-size: 18px; /* 숫자 크기 */
+    font-weight: bold; /* 숫자 굵게 */
+}
 
 

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="./sytles/write.css"> <!-- 기존 CSS 파일 경로를 수정 -->
+    <link rel="stylesheet" type="text/css" href="./styles/write.css"> <!-- 기존 CSS 파일 경로를 수정 -->
     <title>게시글 작성</title>
 </head>
 <body>
@@ -25,37 +25,8 @@
     <button class="submit-button" id="submit-button">완료</button>
 </div>
 
-<script>
-    function toggleDropdown() {
-        const dropdown = document.getElementById('dropdownMenu');
-        dropdown.classList.toggle('show');
-    }
-    document.querySelector('.submit-button').addEventListener('click', () => {
-        const title = document.getElementById('title').value;
-        const content = document.getElementById('content').value;
-        const image = document.getElementById('image').files[0];
-
-        // 폼 유효성 검사
-        if (title && content) {
-            // 게시글 작성 로직 추가 (예: API 요청 등)
-            console.log("제목:", title);
-            console.log("내용:", content);
-            if (image) {
-                console.log("첨부된 이미지 파일명:", image.name);
-            }
-            alert("게시글이 작성되었습니다."); // 작성 완료 알림
-
-            // 커뮤니티 페이지로 이동
-            window.location.href = './community.html';
-        } else {
-            alert("제목과 내용을 입력하세요."); // 유효성 검사 실패 알림
-        }
-    });
-    fetch('./components/header.html').then(response => response.text()).then(data => {
-        document.getElementById('header-container').innerHTML = data;
-    })
-        .catch(error => console.error('Error loading header:', error));
-</script>
+<script src="./js/utils.js"></script>
+<script src="./js/write.js"></script>
 
 </body>
 </html>

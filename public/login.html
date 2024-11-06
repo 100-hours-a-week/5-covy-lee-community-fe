@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="./sytles/login.css">
+    <link rel="stylesheet" type="text/css" href="./styles/login.css">
     <title>이민구</title>
 </head>
 <body>
@@ -27,62 +27,8 @@
     </p>
 </div>
 
-<script>
-    const emailInput = document.getElementById("email");
-    const passwordInput = document.getElementById("password");
-    const loginButton = document.getElementById("loginButton");
+<script src="./js/login.js"></script>
 
-    const emailError = document.getElementById("emailError");
-    const passwordError = document.getElementById("passwordError");
-
-    function validateEmail() {
-        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (emailInput.value === "") {
-            emailError.style.display = "none"; // 비어있을 경우 오류 메시지 숨김
-            return false;
-        }
-        if (!emailPattern.test(emailInput.value)) {
-            emailError.style.display = "block";
-            return false;
-        } else {
-            emailError.style.display = "none";
-            return true;
-        }
-    }
-
-    function validatePassword() {
-        const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/;
-        if (passwordInput.value === "") {
-            passwordError.style.display = "none"; // 비어있을 경우 오류 메시지 숨김
-            return false;
-        }
-        if (!passwordPattern.test(passwordInput.value)) {
-            passwordError.style.display = "block";
-            return false;
-        } else {
-            passwordError.style.display = "none";
-            return true;
-        }
-    }
-
-    function checkFormValidity() {
-        const isEmailValid = validateEmail();
-        const isPasswordValid = validatePassword();
-
-        const formIsValid = isEmailValid && isPasswordValid;
-
-        loginButton.disabled = !formIsValid; // 버튼 활성화/비활성화
-    }
-
-    emailInput.addEventListener("input", function() {
-        validateEmail();
-        checkFormValidity();
-    });
-
-    passwordInput.addEventListener("input", function() {
-        validatePassword();
-        checkFormValidity();
-    });
-</script>
 </body>
 </html>
+

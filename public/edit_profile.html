@@ -3,11 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="./sytles/edit_profile.css">
+    <link rel="stylesheet" type="text/css" href="./styles/edit_profile.css">
     <title>회원정보 수정</title>
-    <style>
 
-    </style>
 </head>
 <body>
 <div id="header-container"></div>
@@ -18,15 +16,18 @@
             <label for="profile-pic">프로필 사진*</label>
             <div class="profile-pic" onmouseover="showChangeText(this)" onmouseout="hideChangeText(this)">
                 <input type="file" id="fileInput" accept="image/*" style="display: none;" onchange="previewImage(event)">
-                <img id="preview" src="" alt="미리보기" onclick="document.getElementById('fileInput').click();">
                 <div class="circle" onclick="document.getElementById('fileInput').click();">
+                    <img id="preview" src="" alt="미리보기">
                     <span class="change-text">변경</span>
                 </div>
             </div>
         </div>
+
+
+
         <div class="input-group">
             <label for="email">이메일</label>
-            <span id="emailDisplay">user@example.com</span> <!-- 기존 이메일 보여주기 -->
+            <span id="emailDisplay"></span> <!-- 이메일이 동적으로 설정됩니다. -->
         </div>
         <div class="input-group">
             <label for="username">닉네임*</label>
@@ -36,46 +37,16 @@
         <button type="submit" id="editButton">수정하기</button>
         <button type="button" id="withdrawButton">회원탈퇴</button>
         <div class="spacing"></div>
-
     </form>
     <button type="button" id="completeButton">수정완료</button>
 </div>
-<script>
-    function toggleDropdown() {
-        const dropdown = document.getElementById('dropdownMenu');
-        dropdown.classList.toggle('show');
-    }
 
-    function previewImage(event) {
-        const file = event.target.files[0];
-        const previewCircle = document.querySelector('.circle');
+<script src="./js/utils.js"></script>
+<script src="./js/edit_profile.js"></script>
 
-        if (file) {
-            // 이미지가 선택된 경우
-            previewCircle.style.backgroundImage = `url(${URL.createObjectURL(file)})`;
-            previewCircle.style.backgroundSize = 'cover';
-            previewCircle.style.backgroundPosition = 'center';
-            previewCircle.style.backgroundColor = 'transparent'; // 배경색 투명하게 설정
-            previewCircle.querySelector('span').style.display = 'none';
-        } else {
-            // 이미지가 선택되지 않은 경우 (파일 입력이 비어있을 때)
-            previewCircle.style.backgroundImage = 'none'; // 미리보기 초기화
-            previewCircle.style.backgroundColor = '#D5C9DD'; // 기본 배경색으로 복원
-            previewCircle.querySelector('span').style.display = 'block'; // '+' 아이콘 보이기
-        }
-    }
-
-    function showChangeText(element) {
-        element.querySelector('.change-text').style.display = 'block';
-    }
-
-    function hideChangeText(element) {
-        element.querySelector('.change-text').style.display = 'none';
-    }
-    fetch('./components/header.html').then(response => response.text()).then(data => {
-        document.getElementById('header-container').innerHTML = data;
-    })
-        .catch(error => console.error('Error loading header:', error));
-</script>
 </body>
 </html>
+
+
+
+

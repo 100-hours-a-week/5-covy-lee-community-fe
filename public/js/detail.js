@@ -21,7 +21,7 @@ if (!postId) {
             document.getElementById('postImage').src = 'http://localhost:3000/photo_4.jpeg';
             document.getElementById('postVisitor').innerText = post.visitor;
             document.getElementById('postComment').innerText = post.comment;
-            document.getElementById('postDate').innerText = new Date(post.createdAt).toLocaleDateString(); // 작성일자 포맷팅
+            //document.getElementById('postDate').innerText = new Date(post.createdAt).toLocaleDateString(); // 작성일자 포맷팅
             document.getElementById('editButton').href = `./edit.html?id=${postId}`;
         } catch (error) {
             console.error('게시글 가져오기 오류:', error);
@@ -32,7 +32,7 @@ if (!postId) {
     fetchPost();
 }
 
-function submitComment() {
+const submitComment = () => {
     const commentInput = document.getElementById('commentInput');
     const commentText = commentInput.value.trim();
     if (commentText) {
@@ -45,40 +45,23 @@ function submitComment() {
     } else {
         alert('댓글을 입력하세요.');
     }
-}
+};
 
-function toggleDropdown() {
-    const dropdown = document.getElementById('dropdownMenu');
-    dropdown.classList.toggle('show');
-}
-
-// 클릭 외부 시 드롭다운 닫기
-window.onclick = function(event) {
-    if (!event.target.matches('.profile-button') && !event.target.matches('#profileImage')) {
-        const dropdowns = document.getElementsByClassName("dropdown-menu");
-        for (let i = 0; i < dropdowns.length; i++) {
-            const openDropdown = dropdowns[i];
-            if (openDropdown.classList.contains('show')) {
-                openDropdown.classList.remove('show');
-            }
-        }
-    }
-}
 
 // 모달 열기 함수
-function showModal() {
+const showModal = () => {
     document.getElementById('deleteModal').style.display = 'block';
-}
+};
 
 // 모달 닫기 함수
-function closeModal() {
+const closeModal = () => {
     document.getElementById('deleteModal').style.display = 'none';
-}
+};
 
 // 삭제 확인 함수
-function confirmDelete() {
+const confirmDelete = () => {
     // 삭제 로직 실행 (예: API 요청 등)
     alert("게시글이 삭제되었습니다.");
     closeModal();
     // 필요에 따라 삭제 후 페이지 이동 로직 추가
-}
+};

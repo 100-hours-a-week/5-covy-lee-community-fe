@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>커뮤니티</title>
+    <title>헤더</title>
     <style>
+        /* 기존 CSS 스타일 그대로 유지 */
         body {
             margin: 0; /* 기본 여백 제거 */
             padding-top: 100px; /* 헤더 높이만큼 여백 추가 */
         }
-        
+
         header {
             background-color: transparent; /* 헤더 배경 투명 */
             text-align: center; /* 중앙 정렬 */
@@ -44,7 +45,7 @@
             border-radius: 50%; /* 둥글게 만들기 */
             overflow: hidden; /* 넘치는 부분 숨기기 */
             cursor: pointer; /* 커서 포인터로 변경 */
-            border: 2px solid #666488; /* 테두리 추가 */
+            border: none;
             background-color: white; /* 배경색 */
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* 그림자 효과 */
         }
@@ -89,7 +90,7 @@
         }
 
         .back-button {
-            position: absolute; /* 절대 위치 지정 */
+            position: fixed; /* 절대 위치에서 고정 위치로 변경 */
             top: 20px; /* 상단에서 20px 떨어진 위치 */
             left: 25%; /* 왼쪽에서 25% 떨어진 위치 */
             width: 40px;
@@ -104,6 +105,7 @@
             transition: background-color 0.3s, transform 0.2s; /* 부드러운 전환 효과 */
         }
 
+
         .back-button:hover {
             background-color: #666488; /* 호버 시 배경색 변경 */
             transform: translateY(-2px); /* 호버 시 살짝 올라오게 만들기 */
@@ -117,41 +119,48 @@
     </style>
 </head>
 <body>
-    <header>
-        <h1 onclick="location.href='community.html';" style="cursor: pointer;">커뮤니티</h1>
-        <button class="back-button" onclick="history.back();">&lt;</button>
-        <div class="horizontal-rule"></div>
-        <div class="profile-button" onclick="toggleDropdown()">
-            <img src="./images/photo_3.jpeg" alt="프로필" id="profileImage">
-        </div>
-        <div class="dropdown-menu" id="dropdownMenu">
-            <ul>
-                <li><a href="/edit_profile.html">회원정보 수정</a></li>
-                <li><a href="/edit_password.html">비밀번호 수정</a></li>
-                <li><a href="/login.html">로그아웃</a></li>
-            </ul>
-        </div>
-    </header>
+<header>
+    <h1 onclick="location.href='community.html';" style="cursor: pointer;">아무말 대잔치</h1>
+    <button class="back-button" onclick="history.back();">&lt;</button>
+    <div class="horizontal-rule"></div>
+    <div class="profile-button" onclick="toggleDropdown()">
+        <img src="http://localhost:3000/images/photo_1.jpeg" alt="프로필" id="profileImage"> <!-- 기본 이미지 경로 설정 -->
+    </div>
+    <div class="dropdown-menu" id="dropdownMenu">
+        <ul>
+            <li><a href="/edit_profile.html">회원정보 수정</a></li>
+            <li><a href="/edit_password.html">비밀번호 수정</a></li>
+            <li>
+                <a href="#" onclick="utils()">로그아웃</a>
+            </li>
+        </ul>
+    </div>
+</header>
 
+<script>
+    // 페이지가 로드될 때 프로필 이미지를 로컬 스토리지에서 가져와 설정
+    window.onload = function() {
+        const userImage = sessionStorage.getItem('userImage'); // 로컬 스토리지에서 이미지 가져오기
+        console.log('로컬 스토리지에서 가져온 값:', userImage);
 
-    <script>
-        function toggleDropdown() {
+        // 이미지 URL이 있다면 설정, 없다면 기본 이미지로 설정
+        document.getElementById('profileImage').src = userImage || "./public/images/profile_img.webp";
+    };
+
+    function toggleDropdown() {
+        const dropdown = document.getElementById('dropdownMenu');
+        dropdown.classList.toggle('show');
+    }
+
+    // 드롭다운 외부 클릭 시 드롭다운 숨기기
+    window.onclick = function(event) {
+        if (!event.target.matches('.profile-button') && !event.target.matches('.profile-button img')) {
             const dropdown = document.getElementById('dropdownMenu');
-            dropdown.classList.toggle('show');
-        }
-
-        // 드롭다운 외부 클릭 시 드롭다운 숨기기
-        window.onclick = function(event) {
-            if (!event.target.matches('.profile-button') && !event.target.matches('.profile-button img')) {
-                const dropdown = document.getElementById('dropdownMenu');
-                if (dropdown.classList.contains('show')) {
-                    dropdown.classList.remove('show');
-                }
+            if (dropdown.classList.contains('show')) {
+                dropdown.classList.remove('show');
             }
         }
-    </script>
+    }
+</script>
 </body>
 </html>
-
-
-
