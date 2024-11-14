@@ -24,7 +24,7 @@
   </div>
 
   <div class="content">
-    <img id="postImage" src="" alt="게시글 이미지" style="width: 300px; height: auto; display: block; margin: 0 auto;">
+    <img id="postImage" src="" alt="게시글 이미지" style="width: 544px; height: 306px ; display: block; margin: 0 auto;">
     <p id="postContent">게시글 내용이 여기에 표시됩니다.</p>
     <div class="stats-container">
       <div class="stat-box">
@@ -41,17 +41,16 @@
       </div>
     </div>
   </div>
-
+  <div class="horizontal-rule"></div>
 
   <div class="comment-section">
-    <h2>댓글</h2>
-    <div id="commentList">
-      <!-- 댓글 리스트가 여기에 추가됩니다. -->
-    </div>
     <div class="comment-form">
       <textarea id="commentInput" placeholder="댓글을 작성하세요..." rows="3"></textarea>
-      <button onclick="submitComment()">댓글 작성</button>
+      <button onclick="submitComment()" class="comment-btn">댓글 작성</button>
     </div>
+    <div id="commentList">
+    </div>
+
   </div>
 </div>
 

@@ -64,6 +64,7 @@ document.getElementById("loginForm").addEventListener("submit", async (event) =>
             headers: {
                 'Content-Type': 'application/json',
             },
+            credentials: 'include',  // 쿠키를 포함하여 서버에 세션 정보 전달
             body: JSON.stringify({ email, password }),
         });
 
@@ -71,14 +72,12 @@ document.getElementById("loginForm").addEventListener("submit", async (event) =>
 
         if (response.ok) {
             console.log('서버로부터 받은 데이터:', data);
-            sessionStorage.setItem('userId', data.user.id);
-            sessionStorage.setItem('userEmail', data.user.email);
-            sessionStorage.setItem('userName', data.user.name);
-            sessionStorage.setItem('userImage', data.user.image);
-            alert('로그인 성공 ' + data.user.name + "님 반갑습니다!");
+            sessionStorage.setItem('userImage', data.user.image); // 프로필 이미지
+            sessionStorage.setItem('userName', data.user.username); // 사용자 이름
+
+            alert('로그인 성공 ' + data.user.username + "님 반갑습니다!");
             window.location.href = './community.html';
-        }
-        else {
+        } else {
             alert('로그인 실패: ' + data.message);
         }
     } catch (error) {

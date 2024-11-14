@@ -87,12 +87,12 @@ header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin: 0 auto 10px;
+    margin: 10px auto 10px;
     width: 620px;
 }
 
 .card-container {
-    margin: 5px auto 0;
+    margin: 20px auto 0;
     display: flex;
     flex-direction: column;
     gap: 16px;
@@ -100,7 +100,7 @@ header {
     background-color: transparent;
     justify-content: flex-start; /* 카드가 상단부터 쌓이도록 */
     align-items: center; /* 카드들을 가운데 정렬 */
-    max-height: 550px; /* 카드 컨테이너의 최대 높이 설정 */
+    max-height: 600px; /* 카드 컨테이너의 최대 높이 설정 */
     overflow-y: auto; /* 카드가 컨테이너를 넘으면 스크롤이 생기도록 */
 }
 

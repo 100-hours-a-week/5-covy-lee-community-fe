@@ -123,9 +123,11 @@
     <h1 onclick="location.href='community.html';" style="cursor: pointer;">아무말 대잔치</h1>
     <button class="back-button" onclick="history.back();">&lt;</button>
     <div class="horizontal-rule"></div>
+
     <div class="profile-button" onclick="toggleDropdown()">
-        <img src="http://localhost:3000/images/photo_1.jpeg" alt="프로필" id="profileImage"> <!-- 기본 이미지 경로 설정 -->
+        <img src="" alt="프로필" id="profileImage"> <!-- 기본 이미지 경로 설정 -->
     </div>
+
     <div class="dropdown-menu" id="dropdownMenu">
         <ul>
             <li><a href="/edit_profile.html">회원정보 수정</a></li>
@@ -138,15 +140,26 @@
 </header>
 
 <script>
-    // 페이지가 로드될 때 프로필 이미지를 로컬 스토리지에서 가져와 설정
-    window.onload = function() {
-        const userImage = sessionStorage.getItem('userImage'); // 로컬 스토리지에서 이미지 가져오기
-        console.log('로컬 스토리지에서 가져온 값:', userImage);
+    // DOMContentLoaded 이벤트로 DOM이 로드된 후 실행되도록 변경
+    document.addEventListener('DOMContentLoaded', function() {
+        // 세션 스토리지에서 'user' 객체 가져오기
+        const user = JSON.parse(sessionStorage.getItem('user')) || {};
+        const userImage = user.image;
 
-        // 이미지 URL이 있다면 설정, 없다면 기본 이미지로 설정
-        document.getElementById('profileImage').src = userImage || "./public/images/profile_img.webp";
-    };
+        console.log("세션 스토리지에서 가져온 사용자 이미지:", userImage); // 디버깅 로그 추가
 
+        // 프로필 이미지 설정
+        const profileImage = document.getElementById('profileImage');
+        if (userImage) {
+            // 이미지 경로가 있으면 해당 경로로 이미지 설정
+            profileImage.src = `http://localhost:3000/routes/uploads/${userImage}`;
+        } else {
+            // 이미지 경로가 없으면 기본 이미지 설정
+            profileImage.src = "http://localhost:3000/routes/uploads/profile_img.webp";
+        }
+    });
+
+    // 드롭다운 메뉴 토글 함수
     function toggleDropdown() {
         const dropdown = document.getElementById('dropdownMenu');
         dropdown.classList.toggle('show');
@@ -160,6 +173,13 @@
                 dropdown.classList.remove('show');
             }
         }
+    };
+
+    // 로그아웃 처리 함수 (기본 예시)
+    function utils() {
+        // 로그아웃 처리 (세션 스토리지 비우기)
+        sessionStorage.removeItem('user');
+        window.location.href = './login.html';  // 로그아웃 후 로그인 페이지로 리디렉션
     }
 </script>
 </body>

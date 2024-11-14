@@ -9,6 +9,53 @@ const passwordError = document.getElementById("passwordError");
 const passwordMatchError = document.getElementById("passwordMatchError");
 const usernameError = document.getElementById("usernameError");
 
+// 클라이언트에서 회원가입 요청 보내기 (register.js)
+const signupForm = document.getElementById("signupform");
+
+signupForm.addEventListener("submit", async (event) => {
+    event.preventDefault();
+
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+    const passwordCheck = document.getElementById("password_check").value;
+    const username = document.getElementById("username").value;
+    const fileInput = document.getElementById("fileInput");
+    const file = fileInput.files[0];
+
+    if (password !== passwordCheck) {
+        alert("비밀번호가 일치하지 않습니다.");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append("email", email);
+    formData.append("password", password);
+    formData.append("username", username);
+    if (file) formData.append("profilePic", file);  // 수정된 부분
+
+
+    try {
+        const response = await fetch('http://localhost:3000/api/register', {
+            method: 'POST',
+            body: formData,
+        });
+        const data = await response.json();
+
+        if (response.ok) {
+            alert("회원가입 성공!");
+            window.location.href = './login.html'; // 로그인 페이지로 이동
+        } else {
+            alert(data.message || "회원가입 실패");
+        }
+    } catch (error) {
+        console.error("회원가입 중 오류 발생:", error);
+        alert("회원가입에 실패했습니다. 다시 시도해주세요.");
+    }
+});
+
+
+
+
 const  previewImage= (event) => {
     const file = event.target.files[0];
     const previewCircle = document.querySelector('.circle');
@@ -118,4 +165,5 @@ passwordCheckInput.addEventListener("input", () => {
 usernameInput.addEventListener("input", () => {
     validateUsername();
     checkFormValidity();
+
 });

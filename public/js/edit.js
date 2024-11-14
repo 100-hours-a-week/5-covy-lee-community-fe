@@ -10,7 +10,10 @@ if (!postId) {
     // 게시글 정보 가져오기
     async function fetchPost() {
         try {
-            const response = await fetch(`http://localhost:3000/api/posts/${postId}`);
+            const response = await fetch(`http://localhost:3000/api/posts/${postId}`, {
+                method: 'GET',
+                credentials: 'include'  // 쿠키를 포함하여 요청을 보냄
+            });
             if (!response.ok) {
                 throw new Error('게시글을 불러오는 데 실패했습니다.');
             }
