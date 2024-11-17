@@ -2,27 +2,22 @@ window.onload = () => {
     const user = JSON.parse(sessionStorage.getItem('user')) || {}; // 세션 스토리지에서 'user' 객체 가져오기
     console.log(user); // 세션 정보 로그로 확인
 
-    if (!user) {
+    if (!user.user_id) {
         alert('세션 정보가 없습니다!');
         return;
     }
 
-    const userEmail = user.email || "user@example.com"; // 기본 이메일
-    const userName = user.username || "기본 이름"; // 기본 닉네임
+    const userEmail = user.email || "user@example.com";
+    const userName = user.username || "기본 이름";
     const userImage = user.image ? `http://localhost:3000/routes/uploads/${user.image}` : "http://localhost:3000/routes/uploads/profile_img.webp";
 
-    // 이메일 및 닉네임 표시
     document.getElementById('emailDisplay').innerText = userEmail;
     document.getElementById('username').value = userName;
 
-    // 프로필 사진 미리보기
     const previewImage = document.getElementById('preview');
     previewImage.src = userImage;
-    previewImage.style.display = userImage ? 'block' : 'none'; // 이미지가 있을 경우만 표시
+    previewImage.style.display = userImage ? 'block' : 'none';
 };
-
-
-
 
 // 프로필 이미지 미리보기
 const previewImage = (event) => {
@@ -30,14 +25,13 @@ const previewImage = (event) => {
     const previewCircle = document.querySelector('.circle');
 
     if (file) {
-        previewCircle.style.backgroundImage = `url(${URL.createObjectURL(file)})`;
+        const imageUrl = URL.createObjectURL(file);
+        previewCircle.style.backgroundImage = `url(${imageUrl})`;
         previewCircle.style.backgroundSize = 'cover';
         previewCircle.style.backgroundPosition = 'center';
-        previewCircle.style.backgroundColor = 'transparent'; // 배경색 투명하게 설정
-        document.getElementById('preview').src = URL.createObjectURL(file); // 미리보기 이미지 업데이트
+        document.getElementById('preview').src = imageUrl;
     } else {
-        previewCircle.style.backgroundImage = 'none'; // 미리보기 초기화
-        previewCircle.style.backgroundColor = '#D5C9DD'; // 기본 배경색으로 복원
+        previewCircle.style.backgroundImage = 'none';
     }
 }
 
@@ -51,22 +45,17 @@ const hideChangeText = (element) => {
 };
 
 const editProfile = async (event) => {
-    event.preventDefault(); // 폼 제출 기본 동작 막기
+    event.preventDefault();
 
-    // 세션 스토리지에서 사용자 정보 가져오기
     const user = JSON.parse(sessionStorage.getItem('user'));
+    console.log('User from sessionStorage before update:', user);
 
-    console.log('User from sessionStorage:', user); // user 객체 확인
-
-    // user가 없거나 user.user_id가 없으면, 오류 처리
     if (!user || !user.user_id) {
-        console.log('User or user.user_id is missing!');
         alert('사용자 정보가 없습니다. 다시 로그인 해주세요.');
         return;
     }
 
-    const userId = user.user_id; // 사용자 ID를 user.user_id로 수정
-
+    const userId = user.user_id;
     const formData = new FormData();
     const username = document.getElementById('username').value;
     const fileInput = document.getElementById('fileInput').files[0];
@@ -84,14 +73,23 @@ const editProfile = async (event) => {
         });
 
         const result = await response.json();
+        console.log('Response from server:', result);
 
         if (response.ok) {
-            // 수정 완료 시 사용자 정보를 갱신
+            // 수정된 사용자 정보를 세션 스토리지에 업데이트
             user.username = username;
             if (fileInput) {
-                user.image = fileInput.name; // 파일 이름으로 사용자 이미지 갱신
+                user.image = fileInput.name; // 서버에서 이미지 파일 이름을 응답으로 제공해야 정확하게 업데이트 가능
             }
-            sessionStorage.setItem('user', JSON.stringify(user)); // 세션 스토리지에 사용자 정보 저장
+            sessionStorage.setItem('user', JSON.stringify(user));
+            console.log('Updated user saved to sessionStorage:', JSON.parse(sessionStorage.getItem('user')));
+
+            // 이미지 미리보기 갱신
+            if (fileInput) {
+                const imageUrl = `http://localhost:3000/routes/uploads/${fileInput.name}`;
+                document.getElementById('preview').src = imageUrl;
+                document.querySelector('.circle').style.backgroundImage = `url(${imageUrl})`;
+            }
 
             alert('회원정보가 성공적으로 수정되었습니다!');
         } else {
@@ -104,6 +102,6 @@ const editProfile = async (event) => {
 };
 
 
-
 document.getElementById('editForm').addEventListener('submit', editProfile);
+
 
