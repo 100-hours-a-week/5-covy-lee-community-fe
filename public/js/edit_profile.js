@@ -9,7 +9,7 @@ window.onload = () => {
 
     const userEmail = user.email || "user@example.com";
     const userName = user.username || "기본 이름";
-    const userImage = user.image ? `http://localhost:3000/routes/uploads/${user.image}` : "http://localhost:3000/routes/uploads/profile_img.webp";
+    const userImage = user.image ? `http://localhost:3000/profile_images/${user.image}` : "http://localhost:3000/profile_images/profile_img.webp";
 
     document.getElementById('emailDisplay').innerText = userEmail;
     document.getElementById('username').value = userName;
@@ -86,7 +86,7 @@ const editProfile = async (event) => {
 
             // 이미지 미리보기 갱신
             if (fileInput) {
-                const imageUrl = `http://localhost:3000/routes/uploads/${fileInput.name}`;
+                const imageUrl = `http://localhost:3000/profile_images/${fileInput.name}`;
                 document.getElementById('preview').src = imageUrl;
                 document.querySelector('.circle').style.backgroundImage = `url(${imageUrl})`;
             }
@@ -101,6 +101,56 @@ const editProfile = async (event) => {
     }
 };
 
+const deleteUser = async (event) => {
+    event.preventDefault();
+
+    // 세션 스토리지에서 사용자 정보 가져오기
+    const user = JSON.parse(sessionStorage.getItem('user'));
+    console.log('User from sessionStorage:', user);
+
+    if (!user || !user.user_id) { // 세션 스토리지에서 사용자 ID 확인
+        alert('사용자 정보가 없습니다. 다시 로그인 해주세요.');
+        return;
+    }
+
+    const confirmation = confirm('정말로 회원탈퇴 하시겠습니까?'); // 탈퇴 확인 팝업
+    if (!confirmation) {
+        return; // 사용자가 취소한 경우
+    }
+
+    try {
+        const response = await fetch(`http://localhost:3000/api/logout`, { // 로그아웃 API 호출
+            method: 'POST',
+            credentials: 'include', // 쿠키 및 세션 정보 전송
+        });
+
+        if (response.ok) {
+            const deleteResponse = await fetch(`http://localhost:3000/api/user/${user.user_id}`, { // 회원탈퇴 API 호출
+                method: 'DELETE',
+                credentials: 'include', // 쿠키 및 세션 정보 전송
+            });
+
+            const result = await deleteResponse.json();
+            console.log('Delete Response from server:', result);
+
+            if (deleteResponse.ok) {
+                // 탈퇴 성공 시 세션 스토리지 초기화 및 페이지 이동
+                sessionStorage.removeItem('user');
+                alert('회원탈퇴가 성공적으로 처리되었습니다.');
+                window.location.href = '/login.html'; // 로그인 페이지로 리다이렉트
+            } else {
+                alert(result.message || '회원탈퇴에 실패했습니다.');
+            }
+        } else {
+            alert('로그아웃 처리에 실패했습니다.');
+        }
+    } catch (error) {
+        console.error('Error:', error);
+        alert('서버 오류가 발생했습니다.');
+    }
+};
+
+document.getElementById('withdrawButton').addEventListener('click', deleteUser);
 
 document.getElementById('editForm').addEventListener('submit', editProfile);
 

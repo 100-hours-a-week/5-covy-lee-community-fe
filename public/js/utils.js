@@ -30,8 +30,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 const profileImage = document.getElementById('profileImage');
                 if (profileImage) {
                     profileImage.src = userImage ?
-                        `http://localhost:3000/routes/uploads/${userImage}` :
-                        "http://localhost:3000/routes/uploads/profile_img.webp";
+                        `http://localhost:3000/profile_images/${userImage}` :
+                        "http://localhost:3000/profile_images/default_profile_img.webp";
                 }
 
                 // 이벤트 리스너 추가 (드롭다운 토글, 로그아웃 등)
@@ -50,6 +50,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     loadUserDataAndHeader(); // 함수 호출
 });
+
 
 const utils = () => {
     sessionStorage.clear(); // 세션 스토리지 데이터 삭제

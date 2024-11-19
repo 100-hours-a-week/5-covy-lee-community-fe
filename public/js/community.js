@@ -30,7 +30,7 @@ const checkSession = async () => {
         }
     } catch (error) {
         console.error('세션 체크 오류:', error.message);
-        window.location.href = './login.html'; // 에러 발생 시 로그인 페이지로 리디렉션
+        //window.location.href = './login.html'; // 에러 발생 시 로그인 페이지로 리디렉션
     }
 };
 
@@ -86,9 +86,9 @@ const displayPosts = () => {
         card.classList.add('card');
         card.innerHTML = `
             <h3>${post.title}</h3>
-            <p>추천수: ${post.like}, 방문자 수: ${post.visitor}, 댓글 수: ${post.coment}</p>
             <div class="horizontal-rule"></div>
-            <p>작성자: ${post.username}</p>
+            <p>작성자: ${post.author}</p> <!-- 작성자 표시 -->
+            <p>작성일: ${new Date(post.created_at).toLocaleDateString()}</p> <!-- 작성일 표시 -->
             <button class="details-button" onclick="showDetails(${post.id})">자세히 보기</button>
         `;
         cardContainer.appendChild(card);
@@ -96,6 +96,7 @@ const displayPosts = () => {
 
     updatePagination();
 };
+
 
 // 페이지네이션 업데이트 함수
 const updatePagination = () => {
@@ -154,9 +155,18 @@ const showDetails = (postId) => {
 // 게시글 검색 함수
 const searchPosts = () => {
     const searchInput = document.getElementById('searchInput').value.toLowerCase();
-    filteredPosts = posts.filter(post => post.title.toLowerCase().includes(searchInput));
+
+    // 제목 또는 작성자 이름에 검색어가 포함된 게시글 필터링
+    filteredPosts = posts.filter(post =>
+        post.title.toLowerCase().includes(searchInput) ||
+        post.author.toLowerCase().includes(searchInput)
+    );
+
+    // 현재 페이지와 총 페이지 수 업데이트
     currentPage = 1;
     totalPages = Math.ceil(filteredPosts.length / postsPerPage);
+
+    // 필터링된 게시글 표시
     displayPosts();
 };
 

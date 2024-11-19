@@ -140,24 +140,35 @@
 </header>
 
 <script>
-    // DOMContentLoaded 이벤트로 DOM이 로드된 후 실행되도록 변경
-    document.addEventListener('DOMContentLoaded', function() {
-        // 세션 스토리지에서 'user' 객체 가져오기
-        const user = JSON.parse(sessionStorage.getItem('user')) || {};
-        const userImage = user.image;
+    window.onload = function () {
+        try {
+            // 세션 스토리지에서 'user' 객체 가져오기
+            const user = JSON.parse(sessionStorage.getItem('user')) || {};
+            const userImage = user.image;
 
-        console.log("세션 스토리지에서 가져온 사용자 이미지:", userImage); // 디버깅 로그 추가
+            console.log("세션 스토리지에서 가져온 사용자 이미지:", userImage); // 디버깅 로그 추가
 
-        // 프로필 이미지 설정
-        const profileImage = document.getElementById('profileImage');
-        if (userImage) {
-            // 이미지 경로가 있으면 해당 경로로 이미지 설정
-            profileImage.src = `http://localhost:3000/routes/uploads/${userImage}`;
-        } else {
-            // 이미지 경로가 없으면 기본 이미지 설정
-            profileImage.src = "http://localhost:3000/routes/uploads/profile_img.webp";
+            // 프로필 이미지 요소 가져오기
+            const profileImage = document.getElementById('profileImage');
+            if (!profileImage) {
+                console.warn("프로필 이미지 요소를 찾을 수 없습니다.");
+                return;
+            }
+
+            // 이미지 경로 설정
+            if (userImage) {
+                // 사용자 이미지 경로로 설정
+                profileImage.src = `http://localhost:3000/profile_images/${userImage}`;
+            } else {
+                // 사용자 이미지가 없으면 기본 이미지 경로 설정
+                profileImage.src = "http://localhost:3000/profile_images/profile_img.webp";
+            }
+
+        } catch (error) {
+            console.error("이미지를 로드하는 동안 에러가 발생했습니다:", error);
         }
-    });
+    };
+
 
     // 드롭다운 메뉴 토글 함수
     function toggleDropdown() {

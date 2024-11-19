@@ -31,31 +31,35 @@ if (!postId) {
 }
 
 // 게시글 수정 제출 함수
+// 게시글 수정 제출 함수
 const submitEdit = async () => {
     const postTitle = document.getElementById('postTitle').value;
     const postContent = document.getElementById('postContent').value;
+    const imageInput = document.getElementById('image');
 
     if (!postTitle || !postContent) {
         alert('제목과 내용을 입력하세요.');
         return;
     }
 
-    const updatedPost = {
-        title: postTitle,
-        content: postContent,
-    };
+    // FormData를 사용해 데이터와 파일 전송 준비
+    const formData = new FormData();
+    formData.append('title', postTitle);
+    formData.append('content', postContent);
+    if (imageInput.files[0]) {
+        formData.append('postImage', imageInput.files[0]); // 서버에서 'postImage'를 기대
+    }
 
     try {
         const response = await fetch(`http://localhost:3000/api/posts/${postId}`, {
             method: 'PUT', // 수정 요청
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(updatedPost),
+            credentials: 'include', // 쿠키 포함
+            body: formData,
         });
 
         if (!response.ok) {
-            throw new Error('게시글 수정에 실패했습니다.');
+            const errorData = await response.json();
+            throw new Error(errorData.message || '게시글 수정에 실패했습니다.');
         }
 
         alert('게시글이 수정되었습니다.');
@@ -65,6 +69,7 @@ const submitEdit = async () => {
         alert('게시글 수정 중 문제가 발생했습니다.');
     }
 };
+
 
 // 수정 버튼에 이벤트 리스너 추가
 document.getElementById('submitEditButton').addEventListener('click', submitEdit);
