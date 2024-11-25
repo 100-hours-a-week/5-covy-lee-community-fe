@@ -262,6 +262,28 @@ h1 {
     font-size: 14px;
 }
 
+.like-btn {
+    background: none;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 16px;
+}
+
+#like {
+    width: 50px;
+    fill: #ddd; /* 기본 상태: 회색 */
+    cursor: pointer;
+    transition: fill 0.3s ease; /* 부드러운 색상 전환 */
+}
+
+#like.active {
+    fill: red; /* 활성화 상태: 빨간색 */
+}
+
 
 
 
