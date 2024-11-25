@@ -1,70 +1,156 @@
 const params = new URLSearchParams(window.location.search);
-const postId = params.get('id'); // 게시글 ID
+const postId = params.get("id"); // 게시글 ID
 
 if (!postId) {
-    console.error('게시글 ID가 없습니다.');
-    alert('게시글 ID가 필요합니다.');
-} else {
-    // 게시글 정보 및 댓글 목록 가져오기
-    increaseViewCount(); // 조회수 증가
-    fetchPost();
-    fetchComments();
+    alert("게시글 ID가 필요합니다.");
+    throw new Error("게시글 ID가 없습니다.");
 }
+
+initializeLikeStatus();
+increaseViewCount();
+fetchPost();
+fetchComments();
 
 // 조회수 증가
 async function increaseViewCount() {
     try {
         const response = await fetch(`http://localhost:3000/api/posts/${postId}/views`, {
-            method: 'PATCH',
-            credentials: 'include',
+            method: "PATCH",
+            credentials: "include",
         });
 
-        if (!response.ok) {
-            throw new Error('조회수 증가 요청 실패');
-        }
+        if (!response.ok) throw new Error("조회수 증가 요청 실패");
 
         const { views } = await response.json();
-        document.getElementById('postVisitor').innerText = views; // 조회수 반영
+        document.getElementById("postVisitor").innerText = views;
     } catch (error) {
-        console.error('조회수 증가 중 오류 발생:', error.message);
+        console.error(error.message);
     }
 }
-
 
 // 게시글 정보 가져오기
 async function fetchPost() {
     try {
         const response = await fetch(`http://localhost:3000/api/posts/${postId}`, {
-            method: 'GET',
-            credentials: 'include', // 쿠키를 포함하여 요청을 보냄
+            method: "GET",
+            credentials: "include",
+        });
+
+        if (!response.ok) throw new Error("게시글 정보 가져오기 실패");
+
+        const post = await response.json();
+        document.getElementById("postTitle").innerText = post.title || "제목 없음";
+        document.getElementById("postContent").innerText = post.content || "내용 없음";
+        document.getElementById("postUsername").innerText = post.author || "작성자 정보 없음";
+        document.getElementById("editButton").href = `edit.html?id=${postId}`;
+        document.getElementById("postImage").src = post.image
+            ? `http://localhost:3000/post_images/${post.image}`
+            : `http://localhost:3000/post_images/default-image.jpg`;
+        document.getElementById("postComment").innerText = post.comment || 0;
+
+        // 작성자 프로필 이미지 설정
+        const profileImage = document.getElementById("postUserProfile");
+        profileImage.src = post.author_image // 백엔드 응답 필드 확인
+            ? `http://localhost:3000/profile_images/${post.author_image}`
+            : `http://localhost:3000/profile_images/default-profile.jpg`;
+    } catch (error) {
+        console.error(error.message);
+        alert("게시글을 불러오는 데 문제가 발생했습니다.");
+    }
+}
+
+
+
+// 좋아요 상태 초기화
+async function initializeLikeStatus() {
+    try {
+        const response = await fetch(`http://localhost:3000/api/posts/${postId}/like-status`, {
+            method: "GET",
+            credentials: "include",
+        });
+
+        if (!response.ok) throw new Error("좋아요 상태 가져오기 실패");
+
+        const { liked } = await response.json();
+        const likeIcon = document.getElementById("like");
+        likeIcon.classList.toggle("active", liked);
+
+        updateLikeCount();
+    } catch (error) {
+        console.error(error.message);
+    }
+}
+
+// 좋아요 토글
+document.getElementById("likeButton").addEventListener("click", async () => {
+    try {
+        const response = await fetch(`http://localhost:3000/api/posts/${postId}/like`, {
+            method: "POST",
+            credentials: "include",
+        });
+
+        if (!response.ok) throw new Error("좋아요 토글 실패");
+
+        const { liked } = await response.json();
+        const likeIcon = document.getElementById("like");
+        likeIcon.classList.toggle("active", liked);
+
+        updateLikeCount();
+    } catch (error) {
+        console.error(error.message);
+    }
+});
+
+// 좋아요 수 업데이트
+async function updateLikeCount() {
+    try {
+        const response = await fetch(`http://localhost:3000/api/posts/${postId}/likes`, {
+            method: "GET",
+            credentials: "include",
+        });
+
+        if (!response.ok) throw new Error("좋아요 수 가져오기 실패");
+
+        const { likes } = await response.json();
+        document.getElementById("postLike").innerText = likes;
+    } catch (error) {
+        console.error(error.message);
+    }
+}
+
+
+// 댓글 목록, 작성, 수정, 삭제 로직은 동일
+
+
+
+// 좋아요 토글
+document.getElementById("likeButton").addEventListener("click", toggleLike);
+
+async function toggleLike() {
+    try {
+        const response = await fetch(`http://localhost:3000/api/posts/${postId}/like`, {
+            method: "POST",
+            credentials: "include",
         });
 
         if (!response.ok) {
-            throw new Error('게시글을 불러오는 데 실패했습니다.');
+            throw new Error("좋아요 토글 요청 실패");
         }
 
-        const post = await response.json();
+        const result = await response.json();
+        const likeIcon = document.getElementById("like");
 
-        // 게시글 정보 설정
-        document.getElementById('postTitle').innerText = post.title || '제목 없음';
-        document.getElementById('postContent').innerText = post.content || '내용 없음';
-        document.getElementById('postUsername').innerText = post.author || '작성자 정보 없음';
+        // 하트 색상 토글
+        if (result.liked) {
+            likeIcon.classList.add("active"); // 빨간색 하트
+        } else {
+            likeIcon.classList.remove("active"); // 기본 하트
+        }
 
-        // 수정 버튼 링크 설정
-        document.getElementById('editButton').href = `edit.html?id=${postId}`;
-
-        // 이미지 설정 (이미지가 없으면 기본 이미지 사용)
-        const imageUrl = post.image
-            ? `http://localhost:3000/post_images/${post.image}`
-            : `http://localhost:3000/post_images/default-image.jpg`;
-        document.getElementById('postImage').src = imageUrl;
-
-        // 좋아요, 댓글 수 설정
-        document.getElementById('postLike').innerText = post.like || 0;
-        document.getElementById('postComment').innerText = post.comment || 0;
+        // 좋아요 수 업데이트
+        updateLikeCount();
     } catch (error) {
-        console.error('게시글 가져오기 오류:', error.message);
-        alert('게시글을 불러오는 데 문제가 발생했습니다.');
+        console.error("좋아요 토글 요청 중 오류 발생:", error.message);
     }
 }
 
@@ -73,12 +159,12 @@ async function fetchPost() {
 async function fetchComments() {
     try {
         const response = await fetch(`http://localhost:3000/posts/${postId}/comments`, {
-            method: 'GET',
-            credentials: 'include', // 쿠키 포함
+            method: "GET",
+            credentials: "include", // 쿠키 포함
         });
 
         if (!response.ok) {
-            throw new Error('댓글 목록을 불러오는 데 실패했습니다.');
+            throw new Error("댓글 목록을 불러오는 데 실패했습니다.");
         }
 
         const comments = await response.json();
@@ -89,34 +175,34 @@ async function fetchComments() {
         // 댓글 수 업데이트
         updateCommentCount();
     } catch (error) {
-        console.error('댓글 목록 가져오기 오류:', error.message);
-        alert('댓글 목록을 불러오는 데 문제가 발생했습니다.');
+        console.error("댓글 목록 가져오기 오류:", error.message);
+        alert("댓글 목록을 불러오는 데 문제가 발생했습니다.");
     }
 }
 
 // 댓글 작성
 const submitComment = async () => {
-    const commentInput = document.getElementById('commentInput');
+    const commentInput = document.getElementById("commentInput");
     const commentText = commentInput.value.trim();
 
     if (!commentText) {
-        alert('댓글을 입력하세요.');
+        alert("댓글을 입력하세요.");
         return;
     }
 
     try {
         const response = await fetch(`http://localhost:3000/api/posts/${postId}/comments`, {
-            method: 'POST',
+            method: "POST",
             headers: {
-                'Content-Type': 'application/json',
+                "Content-Type": "application/json",
             },
-            credentials: 'include', // 쿠키 포함
+            credentials: "include", // 쿠키 포함
             body: JSON.stringify({ content: commentText }),
         });
 
         if (!response.ok) {
             const errorData = await response.json();
-            alert(errorData.message || '댓글 작성에 실패했습니다.');
+            alert(errorData.message || "댓글 작성에 실패했습니다.");
             return;
         }
 
@@ -130,52 +216,67 @@ const submitComment = async () => {
         updateCommentCount();
         window.location.reload();
 
-        commentInput.value = ''; // 입력 필드 초기화
+        commentInput.value = ""; // 입력 필드 초기화
     } catch (error) {
-        console.error('댓글 작성 요청 중 오류 발생:', error.message);
-        alert('댓글 작성 중 오류가 발생했습니다.');
+        console.error("댓글 작성 요청 중 오류 발생:", error.message);
+        alert("댓글 작성 중 오류가 발생했습니다.");
     }
 };
 
 // 댓글 리스트에 댓글 추가
 function addCommentToList(comment) {
-    const commentList = document.getElementById('commentList');
+    const commentList = document.getElementById("commentList");
 
-    const commentDiv = document.createElement('div');
-    commentDiv.classList.add('comment');
+    const commentDiv = document.createElement("div");
+    commentDiv.classList.add("comment");
     commentDiv.style.display = "flex";
     commentDiv.style.justifyContent = "space-between";
-    commentDiv.setAttribute('data-id', comment.comment_id);
+    commentDiv.style.alignItems = "center";
+    commentDiv.setAttribute("data-id", comment.comment_id);
 
-    const commentInfoDiv = document.createElement('div');
-    commentInfoDiv.classList.add('comment-info');
+    const commentInfoDiv = document.createElement("div");
+    commentInfoDiv.classList.add("comment-info");
+    commentInfoDiv.style.display = "flex";
+    commentInfoDiv.style.alignItems = "center";
 
-    const authorDiv = document.createElement('div');
-    authorDiv.classList.add('comment-author');
-    authorDiv.textContent = comment.author || '익명';
+    // 작성자 프로필 이미지 추가
+    const authorImage = document.createElement("img");
+    authorImage.src = comment.author_image
+        ? `http://localhost:3000/profile_images/${comment.author_image}`
+        : `http://localhost:3000/profile_images/default-profile.jpg`;
+    authorImage.alt = "작성자 이미지";
+    authorImage.style.width = "30px";
+    authorImage.style.height = "30px";
+    authorImage.style.borderRadius = "50%";
+    authorImage.style.marginRight = "10px";
 
-    const contentDiv = document.createElement('div');
-    contentDiv.classList.add('comment-content');
+    const authorDiv = document.createElement("div");
+    authorDiv.classList.add("comment-author");
+    authorDiv.textContent = comment.author || "익명";
+
+    const contentDiv = document.createElement("div");
+    contentDiv.classList.add("comment-content");
     contentDiv.textContent = comment.content;
 
-    const dateDiv = document.createElement('div');
-    dateDiv.classList.add('comment-date');
+    const dateDiv = document.createElement("div");
+    dateDiv.classList.add("comment-date");
     const createdAt = new Date(comment.created_at);
-    dateDiv.textContent = !isNaN(createdAt) ? createdAt.toLocaleString() : '알 수 없는 날짜';
+    dateDiv.textContent = !isNaN(createdAt) ? createdAt.toLocaleString() : "알 수 없는 날짜";
 
+    commentInfoDiv.appendChild(authorImage); // 작성자 이미지 추가
     commentInfoDiv.appendChild(authorDiv);
     commentInfoDiv.appendChild(contentDiv);
     commentInfoDiv.appendChild(dateDiv);
 
-    const commentActionsDiv = document.createElement('div');
-    commentActionsDiv.classList.add('comment-actions');
+    const commentActionsDiv = document.createElement("div");
+    commentActionsDiv.classList.add("comment-actions");
 
-    const editButton = document.createElement('button');
-    editButton.textContent = '수정';
+    const editButton = document.createElement("button");
+    editButton.textContent = "수정";
     editButton.onclick = () => editComment(comment.comment_id);
 
-    const deleteButton = document.createElement('button');
-    deleteButton.textContent = '삭제';
+    const deleteButton = document.createElement("button");
+    deleteButton.textContent = "삭제";
     deleteButton.onclick = () => deleteComment(comment.comment_id);
 
     commentActionsDiv.appendChild(editButton);
@@ -187,20 +288,21 @@ function addCommentToList(comment) {
     commentList.prepend(commentDiv);
 }
 
+
 // 댓글 수정
 async function editComment(commentId) {
-    const newContent = prompt('수정할 내용을 입력하세요:');
+    const newContent = prompt("수정할 내용을 입력하세요:");
     if (!newContent) return;
 
     try {
         const response = await fetch(`http://localhost:3000/api/comments/${commentId}`, {
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            credentials: "include",
             body: JSON.stringify({ content: newContent }),
         });
 
-        if (!response.ok) throw new Error('댓글 수정에 실패했습니다.');
+        if (!response.ok) throw new Error("댓글 수정에 실패했습니다.");
 
         window.location.reload();
     } catch (error) {
@@ -210,15 +312,15 @@ async function editComment(commentId) {
 
 // 댓글 삭제
 async function deleteComment(commentId) {
-    if (!confirm('댓글을 삭제하시겠습니까?')) return;
+    if (!confirm("댓글을 삭제하시겠습니까?")) return;
 
     try {
         const response = await fetch(`http://localhost:3000/api/comments/${commentId}`, {
-            method: 'DELETE',
-            credentials: 'include',
+            method: "DELETE",
+            credentials: "include",
         });
 
-        if (!response.ok) throw new Error('댓글 삭제에 실패했습니다.');
+        if (!response.ok) throw new Error("댓글 삭제에 실패했습니다.");
 
         const commentDiv = document.querySelector(`[data-id='${commentId}']`);
         if (commentDiv) commentDiv.remove();
@@ -232,24 +334,32 @@ async function deleteComment(commentId) {
 
 // 댓글 수 업데이트
 function updateCommentCount() {
-    const commentCount = document.getElementById('commentList').children.length;
-    document.getElementById('postComment').innerText = commentCount;
+    const commentCount = document.getElementById("commentList").children.length;
+    document.getElementById("postComment").innerText = commentCount;
 }
 
 // 게시글 삭제
 async function deletePost() {
     try {
-        const response = await fetch(`http://localhost:3000/api/posts/${postId}`, { method: 'DELETE' });
+        const response = await fetch(`http://localhost:3000/api/posts/${postId}`, { method: "DELETE" });
 
-        if (!response.ok) throw new Error('게시글 삭제에 실패했습니다.');
+        if (!response.ok) throw new Error("게시글 삭제에 실패했습니다.");
 
-        window.location.href = './community.html';
+        window.location.href = "./community.html";
     } catch (error) {
         console.error(error.message);
     }
 }
 
 // 모달 열기/닫기
-function showModal() { document.getElementById('deleteModal').style.display = 'block'; }
-function closeModal() { document.getElementById('deleteModal').style.display = 'none'; }
-function confirmDelete() { deletePost(); closeModal(); }
+function showModal() {
+    document.getElementById("deleteModal").style.display = "block";
+}
+function closeModal() {
+    document.getElementById("deleteModal").style.display = "none";
+}
+function confirmDelete() {
+    deletePost();
+    closeModal();
+}
+
