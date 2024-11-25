@@ -284,6 +284,25 @@ h1 {
     fill: red; /* 활성화 상태: 빨간색 */
 }
 
+.profile-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+    object-fit: cover;
+    vertical-align: middle;
+}
 
+.comment-info img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.comment-info {
+    display: flex;
+    align-items: center;
+}
 
 

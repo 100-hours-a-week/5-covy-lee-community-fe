@@ -47,11 +47,19 @@ async function fetchPost() {
             ? `http://localhost:3000/post_images/${post.image}`
             : `http://localhost:3000/post_images/default-image.jpg`;
         document.getElementById("postComment").innerText = post.comment || 0;
+
+        // 작성자 프로필 이미지 설정
+        const profileImage = document.getElementById("postUserProfile");
+        profileImage.src = post.author_image // 백엔드 응답 필드 확인
+            ? `http://localhost:3000/profile_images/${post.author_image}`
+            : `http://localhost:3000/profile_images/default-profile.jpg`;
     } catch (error) {
         console.error(error.message);
         alert("게시글을 불러오는 데 문제가 발생했습니다.");
     }
 }
+
+
 
 // 좋아요 상태 초기화
 async function initializeLikeStatus() {
@@ -223,10 +231,24 @@ function addCommentToList(comment) {
     commentDiv.classList.add("comment");
     commentDiv.style.display = "flex";
     commentDiv.style.justifyContent = "space-between";
+    commentDiv.style.alignItems = "center";
     commentDiv.setAttribute("data-id", comment.comment_id);
 
     const commentInfoDiv = document.createElement("div");
     commentInfoDiv.classList.add("comment-info");
+    commentInfoDiv.style.display = "flex";
+    commentInfoDiv.style.alignItems = "center";
+
+    // 작성자 프로필 이미지 추가
+    const authorImage = document.createElement("img");
+    authorImage.src = comment.author_image
+        ? `http://localhost:3000/profile_images/${comment.author_image}`
+        : `http://localhost:3000/profile_images/default-profile.jpg`;
+    authorImage.alt = "작성자 이미지";
+    authorImage.style.width = "30px";
+    authorImage.style.height = "30px";
+    authorImage.style.borderRadius = "50%";
+    authorImage.style.marginRight = "10px";
 
     const authorDiv = document.createElement("div");
     authorDiv.classList.add("comment-author");
@@ -241,6 +263,7 @@ function addCommentToList(comment) {
     const createdAt = new Date(comment.created_at);
     dateDiv.textContent = !isNaN(createdAt) ? createdAt.toLocaleString() : "알 수 없는 날짜";
 
+    commentInfoDiv.appendChild(authorImage); // 작성자 이미지 추가
     commentInfoDiv.appendChild(authorDiv);
     commentInfoDiv.appendChild(contentDiv);
     commentInfoDiv.appendChild(dateDiv);
@@ -264,6 +287,7 @@ function addCommentToList(comment) {
 
     commentList.prepend(commentDiv);
 }
+
 
 // 댓글 수정
 async function editComment(commentId) {
