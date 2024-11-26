@@ -137,3 +137,28 @@ input[type="password"] {
     width: 100%; /* 너비를 100%로 설정하여 부모 요소의 너비에 맞추기 */
     box-sizing: border-box; /* 패딩과 테두리를 포함하여 전체 너비 계산 */
 }
+
+/* 토스트 메시지 스타일 */
+.toast {
+    visibility: hidden;
+    min-width: 250px;
+    margin-left: -125px;
+    background-color: #333;
+    color: #fff;
+    text-align: center;
+    border-radius: 8px;
+    padding: 16px;
+    position: fixed;
+    z-index: 1;
+    left: 50%;
+    bottom: 30px;
+    font-size: 16px;
+    opacity: 0;
+    transition: opacity 0.3s, bottom 0.3s;
+}
+
+.toast.show {
+    visibility: visible;
+    opacity: 1;
+    bottom: 50px;
+}

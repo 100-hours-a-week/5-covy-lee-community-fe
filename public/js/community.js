@@ -56,7 +56,10 @@ const fetchPosts = async () => {
         }
 
         const fetchedPosts = await response.json(); // 게시물 데이터 가져오기
-        filteredPosts = fetchedPosts; // 필터된 게시물에 데이터 저장
+        filteredPosts = fetchedPosts.map(post => ({
+            ...post,
+            views: post.views || 0 // 조회수 기본값 설정
+        })); // 필터된 게시물에 조회수를 포함
         totalPages = Math.ceil(filteredPosts.length / postsPerPage); // 총 페이지 수 계산
         displayPosts(); // 게시물 표시
 
@@ -65,6 +68,7 @@ const fetchPosts = async () => {
         alert(error.message);
     }
 };
+
 
 // 게시글을 화면에 표시하는 함수
 const displayPosts = () => {
@@ -82,20 +86,53 @@ const displayPosts = () => {
     const postsToDisplay = filteredPosts.slice(startIndex, endIndex);
 
     postsToDisplay.forEach(post => {
+        const profileImageUrl = post.author_image
+            ? `http://localhost:3000/profile_images/${post.author_image}`
+            : 'http://localhost:3000/profile_images/default-profile.jpg'; // 기본 이미지 경로
+
         const card = document.createElement('div');
         card.classList.add('card');
+
+        // 카드 전체를 클릭하면 상세 페이지로 이동
+        card.onclick = () => showDetails(post.id);
+
+        // 작성일자 및 시간 포맷팅 (24시간 표기법)
+        const createdAt = new Date(post.created_at);
+        const formattedDate = `${createdAt.toLocaleDateString()} ${createdAt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}`;
+
         card.innerHTML = `
             <h3>${post.title}</h3>
+            <div class="stats-row">
+                <div class="stats">
+                    <span>❤️&nbsp;${post.like_count || 0}</span>
+                    <span>💬&nbsp;${post.comment_count || 0}</span>
+                    <span>👁️&nbsp;${post.views || 0}</span>
+                </div>
+                <p class="date">${formattedDate}</p>
+            </div>
             <div class="horizontal-rule"></div>
-            <p>작성자: ${post.author}</p> <!-- 작성자 표시 -->
-            <p>작성일: ${new Date(post.created_at).toLocaleDateString()}</p> <!-- 작성일 표시 -->
-            <button class="details-button" onclick="showDetails(${post.id})">자세히 보기</button>
+            <div class="post-info">
+                <div class="author-info">
+                    <img class="author-profile" src="${profileImageUrl}" alt="작성자 이미지">
+                    <p class="author">${post.author}</p>
+                </div>
+            </div>
         `;
         cardContainer.appendChild(card);
     });
 
     updatePagination();
 };
+
+
+
+
+
+
+
+
+
+
 
 
 // 페이지네이션 업데이트 함수
