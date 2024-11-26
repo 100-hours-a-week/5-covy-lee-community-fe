@@ -223,23 +223,27 @@ const submitComment = async () => {
     }
 };
 
-// 댓글 리스트에 댓글 추가
 function addCommentToList(comment) {
     const commentList = document.getElementById("commentList");
 
+    // 댓글 컨테이너
     const commentDiv = document.createElement("div");
     commentDiv.classList.add("comment");
-    commentDiv.style.display = "flex";
-    commentDiv.style.justifyContent = "space-between";
-    commentDiv.style.alignItems = "center";
     commentDiv.setAttribute("data-id", comment.comment_id);
 
-    const commentInfoDiv = document.createElement("div");
-    commentInfoDiv.classList.add("comment-info");
-    commentInfoDiv.style.display = "flex";
-    commentInfoDiv.style.alignItems = "center";
+    // 댓글 헤더 (작성자 + 작성일자 + 액션 버튼)
+    const commentHeaderDiv = document.createElement("div");
+    commentHeaderDiv.classList.add("comment-header");
+    commentHeaderDiv.style.display = "flex";
+    commentHeaderDiv.style.justifyContent = "space-between";
+    commentHeaderDiv.style.alignItems = "center";
 
-    // 작성자 프로필 이미지 추가
+    // 작성자 정보 (프사 + 이름)
+    const authorInfoDiv = document.createElement("div");
+    authorInfoDiv.classList.add("author-info");
+    authorInfoDiv.style.display = "flex";
+    authorInfoDiv.style.alignItems = "center";
+
     const authorImage = document.createElement("img");
     authorImage.src = comment.author_image
         ? `http://localhost:3000/profile_images/${comment.author_image}`
@@ -250,26 +254,23 @@ function addCommentToList(comment) {
     authorImage.style.borderRadius = "50%";
     authorImage.style.marginRight = "10px";
 
-    const authorDiv = document.createElement("div");
-    authorDiv.classList.add("comment-author");
-    authorDiv.textContent = comment.author || "익명";
+    const authorName = document.createElement("div");
+    authorName.classList.add("comment-author");
+    authorName.textContent = comment.author || "익명";
 
-    const contentDiv = document.createElement("div");
-    contentDiv.classList.add("comment-content");
-    contentDiv.textContent = comment.content;
+    authorInfoDiv.appendChild(authorImage);
+    authorInfoDiv.appendChild(authorName);
 
+    // 작성일자
     const dateDiv = document.createElement("div");
     dateDiv.classList.add("comment-date");
     const createdAt = new Date(comment.created_at);
     dateDiv.textContent = !isNaN(createdAt) ? createdAt.toLocaleString() : "알 수 없는 날짜";
 
-    commentInfoDiv.appendChild(authorImage); // 작성자 이미지 추가
-    commentInfoDiv.appendChild(authorDiv);
-    commentInfoDiv.appendChild(contentDiv);
-    commentInfoDiv.appendChild(dateDiv);
-
+    // 수정/삭제 버튼
     const commentActionsDiv = document.createElement("div");
     commentActionsDiv.classList.add("comment-actions");
+    commentActionsDiv.style.display = "flex";
 
     const editButton = document.createElement("button");
     editButton.textContent = "수정";
@@ -282,11 +283,24 @@ function addCommentToList(comment) {
     commentActionsDiv.appendChild(editButton);
     commentActionsDiv.appendChild(deleteButton);
 
-    commentDiv.appendChild(commentInfoDiv);
-    commentDiv.appendChild(commentActionsDiv);
+    // 헤더 조립
+    commentHeaderDiv.appendChild(authorInfoDiv); // 작성자 정보
+    commentHeaderDiv.appendChild(dateDiv); // 작성일자
+    commentHeaderDiv.appendChild(commentActionsDiv); // 수정/삭제 버튼
+
+    // 댓글 내용
+    const contentDiv = document.createElement("div");
+    contentDiv.classList.add("comment-content");
+    contentDiv.textContent = comment.content;
+
+    // 댓글 컨테이너에 요소 추가
+    commentDiv.appendChild(commentHeaderDiv);
+    commentDiv.appendChild(contentDiv);
 
     commentList.prepend(commentDiv);
 }
+
+
 
 
 // 댓글 수정
@@ -353,11 +367,17 @@ async function deletePost() {
 
 // 모달 열기/닫기
 function showModal() {
-    document.getElementById("deleteModal").style.display = "block";
+    const modal = document.getElementById("deleteModal");
+    modal.classList.add("show"); // 모달 활성화
+    modal.style.display = "flex"; // Flexbox 활성화
 }
+
 function closeModal() {
-    document.getElementById("deleteModal").style.display = "none";
+    const modal = document.getElementById("deleteModal");
+    modal.classList.remove("show"); // 모달 비활성화
+    modal.style.display = "none"; // Flexbox 비활성화
 }
+
 function confirmDelete() {
     deletePost();
     closeModal();
