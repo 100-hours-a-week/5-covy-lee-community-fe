@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" type="text/css" href="./styles/edit_profile.css">
     <title>회원정보 수정</title>
-
 </head>
 <body>
 <div id="header-container"></div>
@@ -22,12 +21,9 @@
                 </div>
             </div>
         </div>
-
-
-
         <div class="input-group">
             <label for="email">이메일</label>
-            <span id="emailDisplay"></span> <!-- 이메일이 동적으로 설정됩니다. -->
+            <span id="emailDisplay"></span>
         </div>
         <div class="input-group">
             <label for="username">이름*</label>
@@ -36,16 +32,17 @@
         </div>
         <button type="submit" id="editButton">수정하기</button>
         <button type="button" id="withdrawButton">회원탈퇴</button>
-        <div class="spacing"></div>
     </form>
-    <button type="button" id="completeButton">수정완료</button>
 </div>
+
+<!-- 토스트 메시지 -->
+<div id="toast" class="toast"></div>
 
 <script src="./js/utils.js"></script>
 <script src="./js/edit_profile.js"></script>
-
 </body>
 </html>
+
 
 
 

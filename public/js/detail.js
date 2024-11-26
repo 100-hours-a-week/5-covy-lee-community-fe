@@ -304,47 +304,92 @@ function addCommentToList(comment) {
 
 
 // 댓글 수정
-async function editComment(commentId) {
-    const newContent = prompt("수정할 내용을 입력하세요:");
-    if (!newContent) return;
+function editComment(commentId) {
+    const commentDiv = document.querySelector(`[data-id='${commentId}']`);
+    const contentDiv = commentDiv.querySelector(".comment-content");
+    const originalContent = contentDiv.textContent;
 
-    try {
-        const response = await fetch(`http://localhost:3000/api/comments/${commentId}`, {
-            method: "PUT",
-            headers: { "Content-Type": "application/json" },
-            credentials: "include",
-            body: JSON.stringify({ content: newContent }),
-        });
-
-        if (!response.ok) throw new Error("댓글 수정에 실패했습니다.");
-
-        window.location.reload();
-    } catch (error) {
-        console.error(error.message);
+    // 이미 수정 중인지 확인 후 처리
+    const existingEditForm = commentDiv.querySelector(".edit-form");
+    if (existingEditForm) {
+        // 이전 수정 폼이 남아있다면 삭제 (취소 버튼 눌렀을 경우)
+        existingEditForm.remove();
+        contentDiv.style.display = "block"; // 원래 내용 표시
+        resetButtons(commentDiv); // 버튼 초기화
+        return; // 더 이상의 처리 없이 함수 종료
     }
+
+    // 댓글 내용을 숨김
+    contentDiv.style.display = "none";
+
+    // 댓글 입력 폼 생성
+    const editForm = document.createElement("textarea");
+    editForm.classList.add("edit-form");
+    editForm.value = originalContent;
+    editForm.rows = 3;
+    editForm.style.width = "100%";
+    editForm.style.marginBottom = "10px";
+
+    // 수정 폼을 댓글 영역에 추가
+    commentDiv.insertBefore(editForm, contentDiv);
+
+    // 버튼 동적 변경
+    const actionsDiv = commentDiv.querySelector(".comment-actions");
+    const editButton = actionsDiv.querySelector("button:nth-child(1)");
+    const deleteButton = actionsDiv.querySelector("button:nth-child(2)");
+
+    editButton.textContent = "수정하기";
+    deleteButton.textContent = "취소";
+
+    // 수정하기 버튼 클릭 이벤트
+    editButton.onclick = async () => {
+        const newContent = editForm.value.trim();
+        if (!newContent) {
+            alert("내용을 입력하세요.");
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:3000/api/comments/${commentId}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                credentials: "include",
+                body: JSON.stringify({ content: newContent }),
+            });
+
+            if (!response.ok) throw new Error("댓글 수정에 실패했습니다.");
+
+            // 성공 시 메시지 표시 및 페이지 새로고침
+            alert("수정되었습니다.");
+            window.location.reload();
+        } catch (error) {
+            console.error("댓글 수정 중 오류:", error.message);
+            alert("댓글 수정에 실패했습니다.");
+        }
+    };
+
+    // 취소 버튼 클릭 이벤트
+    deleteButton.onclick = () => {
+        editForm.remove(); // 입력 폼 제거
+        contentDiv.style.display = "block"; // 기존 내용 다시 표시
+        resetButtons(commentDiv); // 버튼 초기화
+    };
 }
 
-// 댓글 삭제
-async function deleteComment(commentId) {
-    if (!confirm("댓글을 삭제하시겠습니까?")) return;
+// 버튼 초기화 함수
+function resetButtons(commentDiv) {
+    const actionsDiv = commentDiv.querySelector(".comment-actions");
+    const editButton = actionsDiv.querySelector("button:nth-child(1)");
+    const deleteButton = actionsDiv.querySelector("button:nth-child(2)");
 
-    try {
-        const response = await fetch(`http://localhost:3000/api/comments/${commentId}`, {
-            method: "DELETE",
-            credentials: "include",
-        });
+    editButton.textContent = "수정";
+    editButton.onclick = () => editComment(commentDiv.getAttribute("data-id"));
 
-        if (!response.ok) throw new Error("댓글 삭제에 실패했습니다.");
-
-        const commentDiv = document.querySelector(`[data-id='${commentId}']`);
-        if (commentDiv) commentDiv.remove();
-
-        updateCommentCount();
-        window.location.reload();
-    } catch (error) {
-        console.error(error.message);
-    }
+    deleteButton.textContent = "삭제";
+    deleteButton.onclick = () => deleteComment(commentDiv.getAttribute("data-id"));
 }
+
+
 
 // 댓글 수 업데이트
 function updateCommentCount() {
