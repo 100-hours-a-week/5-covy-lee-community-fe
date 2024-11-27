@@ -5,38 +5,48 @@ let posts = []; // 게시글 데이터를 저장할 변수
 let totalPages = 0; // 총 페이지 수
 let filteredPosts = []; // 필터된 게시글을 저장할 변수
 
-// 세션 체크 함수
 const checkSession = async () => {
     try {
         const response = await fetch('http://localhost:3000/api/check-session', {
             method: 'GET',
-            credentials: 'include' // 쿠키를 포함하여 서버에 세션 정보 전달
+            credentials: 'include'
         });
 
-        const data = await response.json();
+        if (!response.ok) {
+            console.error('Failed to check session:', response.statusText);
+            window.location.href = './login.html';
+            return;
+        }
 
-        if (response.ok) {
-            // 로그인된 상태에서, 사용자 정보를 세션 스토리지에 저장
+        const data = await response.json();
+        const serverUser = data.user; // 서버에서 최신 사용자 데이터
+
+        if (serverUser) {
+            // 항상 서버 데이터를 `sessionStorage`에 반영
             sessionStorage.setItem('user', JSON.stringify({
-                user_id: data.user.id, // user_id를 포함시킴
-                email: data.user.email,
-                username: data.user.username,
-                image: data.user.image
+                user_id: serverUser.id,
+                email: serverUser.email,
+                username: serverUser.username,
+                image: serverUser.image
             }));
-            console.log('로그인 상태:', data.user);
+
+            // userImage 등 중복 항목 제거
+            sessionStorage.removeItem('userImage');
+            console.log('세션 정보가 갱신되었습니다:', serverUser);
         } else {
-            // 로그인되지 않은 경우, 로그인 페이지로 리디렉션
+            console.error('No user data in server session.');
             window.location.href = './login.html';
         }
     } catch (error) {
         console.error('세션 체크 오류:', error.message);
-        //window.location.href = './login.html'; // 에러 발생 시 로그인 페이지로 리디렉션
+        window.location.href = './login.html';
     }
 };
 
 
 // 페이지가 로드될 때 세션 체크
 window.onload = checkSession;
+
 
 
 // 게시글을 가져오는 함수
