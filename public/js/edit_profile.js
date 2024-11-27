@@ -48,6 +48,26 @@ const previewImage = (event) => {
     }
 };
 
+const updateSessionOnServer = async (user) => {
+    try {
+        const response = await fetch('http://localhost:3000/api/update-session', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'include',
+            body: JSON.stringify(user)
+        });
+
+        if (!response.ok) {
+            throw new Error('세션 업데이트 실패');
+        }
+
+        console.log('서버 세션이 성공적으로 업데이트되었습니다.');
+    } catch (error) {
+        console.error('서버 세션 업데이트 오류:', error.message);
+    }
+};
+
+
 // 프로필 이미지 변경 텍스트 표시/숨기기
 const showChangeText = (element) => {
     element.querySelector('.change-text').style.display = 'block';
@@ -82,27 +102,28 @@ const editProfile = async (event) => {
     try {
         const response = await fetch(`http://localhost:3000/api/user/${userId}`, {
             method: 'PUT',
-            body: formData
+            body: formData,
         });
 
         const result = await response.json();
         console.log('Response from server:', result);
 
         if (response.ok) {
+            // sessionStorage 업데이트
             user.username = username;
-            if (fileInput) {
-                user.image = fileInput.name;
+            if (result.user.image) {
+                user.image = result.user.image; // 서버에서 반환된 이미지 이름 사용
             }
             sessionStorage.setItem('user', JSON.stringify(user));
             console.log('Updated user saved to sessionStorage:', JSON.parse(sessionStorage.getItem('user')));
 
-            if (fileInput) {
-                const imageUrl = `http://localhost:3000/profile_images/${fileInput.name}`;
-                document.getElementById('preview').src = imageUrl;
-                document.querySelector('.circle').style.backgroundImage = `url(${imageUrl})`;
-            }
-
+            // UI 업데이트 및 성공 메시지
             showToast('회원정보가 성공적으로 수정되었습니다!');
+
+            // 페이지 새로고침
+            setTimeout(() => {
+                location.reload(); // 페이지 새로고침
+            }, 1500); // 토스트 메시지 표시 후 새로고침
         } else {
             alert(result.message || '회원정보 수정에 실패했습니다.');
         }
@@ -111,6 +132,8 @@ const editProfile = async (event) => {
         alert('서버 오류가 발생했습니다.');
     }
 };
+
+
 
 document.getElementById('editForm').addEventListener('submit', editProfile);
 
