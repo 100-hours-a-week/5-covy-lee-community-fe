@@ -85,6 +85,19 @@ input[type="text"] {
     transform: translate(-50%, -50%);
 }
 
+/* 이미지 입력폼에 호버 스타일 추가 */
+.circle:hover {
+    cursor: pointer; /* 마우스 포인터 변경 */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* 살짝 강조 효과 */
+    background-color: #b3a4bd; /* 배경색 약간 변경 */
+}
+
+/* 호버 시 텍스트 색상 변경 */
+.circle:hover span {
+    color: #ece7f1; /* 밝은 색상으로 변경 */
+}
+
+
 .circle span {
     color: white;
     font-size: 24px;

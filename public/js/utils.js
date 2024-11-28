@@ -58,9 +58,22 @@ const utils = () => {
     window.location.href = './login.html'; // 로그인 페이지로 이동
 };
 
-const toggleDropdown = () => {
+// 드롭다운 메뉴 토글 함수
+function toggleDropdown() {
     const dropdown = document.getElementById('dropdownMenu');
-    if (dropdown) {
-        dropdown.classList.toggle('show');
+    dropdown.classList.toggle('show');
+}
+
+// 드롭다운 외부 클릭 시 드롭다운 숨기기
+window.onclick = function(event) {
+    const dropdown = document.getElementById('dropdownMenu');
+    const profileButton = document.querySelector('.profile-button');
+
+    // 드롭다운, 프로필 버튼, 프로필 이미지가 아닌 곳을 클릭했을 때
+    if (!dropdown.contains(event.target) && !profileButton.contains(event.target)) {
+        if (dropdown.classList.contains('show')) {
+            dropdown.classList.remove('show');
+        }
     }
 };
+

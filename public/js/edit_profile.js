@@ -48,24 +48,6 @@ const previewImage = (event) => {
     }
 };
 
-const updateSessionOnServer = async (user) => {
-    try {
-        const response = await fetch('http://localhost:3000/api/update-session', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            credentials: 'include',
-            body: JSON.stringify(user)
-        });
-
-        if (!response.ok) {
-            throw new Error('세션 업데이트 실패');
-        }
-
-        console.log('서버 세션이 성공적으로 업데이트되었습니다.');
-    } catch (error) {
-        console.error('서버 세션 업데이트 오류:', error.message);
-    }
-};
 
 
 // 프로필 이미지 변경 텍스트 표시/숨기기
@@ -133,8 +115,42 @@ const editProfile = async (event) => {
     }
 };
 
+// 회원탈퇴 로직 (위 코드 그대로 사용)
+const deleteUser = async () => {
+    const user = JSON.parse(sessionStorage.getItem('user'));
 
+    if (!user || !user.user_id) {
+        alert("사용자 정보가 없습니다. 다시 로그인 해주세요.");
+        return;
+    }
 
+    if (!confirm("정말로 회원탈퇴 하시겠습니까?")) {
+        return; // 사용자 취소 시 함수 종료
+    }
+
+    try {
+        const response = await fetch(`http://localhost:3000/api/user/${user.user_id}`, {
+            method: "DELETE",
+            credentials: "include",
+        });
+
+        const result = await response.json();
+
+        if (response.ok) {
+            alert("회원탈퇴가 성공적으로 처리되었습니다.");
+            sessionStorage.removeItem('user');
+            window.location.href = "/";
+        } else {
+            alert(result.message || "회원탈퇴에 실패했습니다.");
+        }
+    } catch (error) {
+        console.error("회원탈퇴 중 오류 발생:", error.message);
+        alert("서버 오류로 회원탈퇴에 실패했습니다.");
+    }
+};
+
+// 회원탈퇴 버튼 클릭 이벤트 추가
+document.getElementById('withdrawButton').addEventListener('click', deleteUser);
 document.getElementById('editForm').addEventListener('submit', editProfile);
 
 
