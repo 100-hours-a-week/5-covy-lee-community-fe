@@ -119,9 +119,6 @@ async function updateLikeCount() {
 }
 
 
-// 댓글 목록, 작성, 수정, 삭제 로직은 동일
-
-
 
 // 좋아요 토글
 document.getElementById("likeButton").addEventListener("click", toggleLike);
@@ -376,6 +373,32 @@ function editComment(commentId) {
     };
 }
 
+// 댓글 삭제
+async function deleteComment(commentId) {
+    if (!confirm("정말로 이 댓글을 삭제하시겠습니까?")) {
+        return; // 사용자가 삭제를 취소한 경우
+    }
+
+    try {
+        const response = await fetch(`http://localhost:3000/api/comments/${commentId}`, {
+            method: "DELETE",
+            credentials: "include",
+        });
+
+        if (!response.ok) throw new Error("댓글 삭제에 실패했습니다.");
+
+        // 삭제 성공 메시지 표시
+        alert("댓글이 성공적으로 삭제되었습니다.");
+
+        // 페이지 새로고침
+        window.location.reload();
+    } catch (error) {
+        console.error("댓글 삭제 중 오류:", error.message);
+        alert("댓글 삭제 중 문제가 발생했습니다.");
+    }
+}
+
+
 // 버튼 초기화 함수
 function resetButtons(commentDiv) {
     const actionsDiv = commentDiv.querySelector(".comment-actions");
@@ -398,15 +421,24 @@ function updateCommentCount() {
 }
 
 // 게시글 삭제
+
 async function deletePost() {
     try {
-        const response = await fetch(`http://localhost:3000/api/posts/${postId}`, { method: "DELETE" });
+        const response = await fetch(`http://localhost:3000/api/posts/${postId}`, {
+            method: "DELETE",
+            credentials: "include",
+        });
 
         if (!response.ok) throw new Error("게시글 삭제에 실패했습니다.");
 
+        // 삭제 성공 메시지 표시
+        alert("게시글이 성공적으로 삭제되었습니다.");
+
+        // 삭제 성공 후 페이지 이동
         window.location.href = "./community.html";
     } catch (error) {
         console.error(error.message);
+        alert("게시글 삭제 중 문제가 발생했습니다."); // 실패 메시지 표시
     }
 }
 

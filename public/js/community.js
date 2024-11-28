@@ -66,10 +66,14 @@ const fetchPosts = async () => {
         }
 
         const fetchedPosts = await response.json(); // 게시물 데이터 가져오기
-        filteredPosts = fetchedPosts.map(post => ({
+
+        // posts와 filteredPosts를 동기화
+        posts = fetchedPosts.map(post => ({
             ...post,
             views: post.views || 0 // 조회수 기본값 설정
-        })); // 필터된 게시물에 조회수를 포함
+        }));
+        filteredPosts = [...posts]; // posts를 기반으로 초기화
+
         totalPages = Math.ceil(filteredPosts.length / postsPerPage); // 총 페이지 수 계산
         displayPosts(); // 게시물 표시
 
@@ -78,6 +82,7 @@ const fetchPosts = async () => {
         alert(error.message);
     }
 };
+
 
 
 // 게시글을 화면에 표시하는 함수
@@ -203,19 +208,20 @@ const showDetails = (postId) => {
 const searchPosts = () => {
     const searchInput = document.getElementById('searchInput').value.toLowerCase();
 
-    // 제목 또는 작성자 이름에 검색어가 포함된 게시글 필터링
+    // 검색 결과 필터링
     filteredPosts = posts.filter(post =>
-        post.title.toLowerCase().includes(searchInput) ||
-        post.author.toLowerCase().includes(searchInput)
+        post.title.toLowerCase().includes(searchInput) || // 제목 검색
+        post.author.toLowerCase().includes(searchInput)  // 작성자 검색
     );
 
-    // 현재 페이지와 총 페이지 수 업데이트
+    // 페이지와 게시글 갱신
     currentPage = 1;
     totalPages = Math.ceil(filteredPosts.length / postsPerPage);
 
-    // 필터링된 게시글 표시
     displayPosts();
 };
+
+
 
 // 페이지 클릭 시 드롭다운 숨기는 함수
 window.onclick = (event) => {
