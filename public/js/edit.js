@@ -2,7 +2,6 @@
 const params = new URLSearchParams(window.location.search);
 const postId = params.get('id'); // 게시글 ID
 
-
 if (!postId) {
     console.error('게시글 ID가 없습니다.');
     alert('게시글 ID가 필요합니다.');
@@ -10,7 +9,7 @@ if (!postId) {
     // 게시글 정보 가져오기
     async function fetchPost() {
         try {
-            const response = await fetch(`http://localhost:3000/api/posts/${postId}`, {
+            const response = await fetch(`${window.API_BASE_URL}/api/posts/${postId}`, {
                 method: 'GET',
                 credentials: 'include'  // 쿠키를 포함하여 요청을 보냄
             });
@@ -31,7 +30,6 @@ if (!postId) {
 }
 
 // 게시글 수정 제출 함수
-// 게시글 수정 제출 함수
 const submitEdit = async () => {
     const postTitle = document.getElementById('postTitle').value;
     const postContent = document.getElementById('postContent').value;
@@ -51,7 +49,7 @@ const submitEdit = async () => {
     }
 
     try {
-        const response = await fetch(`http://localhost:3000/api/posts/${postId}`, {
+        const response = await fetch(`${window.API_BASE_URL}/api/posts/${postId}`, {
             method: 'PUT', // 수정 요청
             credentials: 'include', // 쿠키 포함
             body: formData,
@@ -70,10 +68,8 @@ const submitEdit = async () => {
     }
 };
 
-
 // 수정 버튼에 이벤트 리스너 추가
 document.getElementById('submitEditButton').addEventListener('click', submitEdit);
-
 
 // 드롭다운 외부 클릭 시 드롭다운 숨기기
 window.onclick = (event) => {
@@ -84,4 +80,5 @@ window.onclick = (event) => {
         }
     }
 };
+
 

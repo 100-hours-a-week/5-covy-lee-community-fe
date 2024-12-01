@@ -59,7 +59,7 @@ document.getElementById("loginForm").addEventListener("submit", async (event) =>
     const password = passwordInput.value;
 
     try {
-        const response = await fetch('http://localhost:3000/api/login', {
+        const response = await fetch(`${window.API_BASE_URL}/api/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -70,16 +70,6 @@ document.getElementById("loginForm").addEventListener("submit", async (event) =>
 
         const data = await response.json();
 
-        // if (response.ok) {
-        //     console.log('서버로부터 받은 데이터:', data);
-        //     sessionStorage.setItem('userImage', data.user.image); // 프로필 이미지
-        //     sessionStorage.setItem('userName', data.user.username); // 사용자 이름
-        //
-        //     alert('로그인 성공 ' + data.user.username + "님 반갑습니다!");
-        //     window.location.href = './community.html';
-        // } else {
-        //     alert('로그인 실패: ' + data.message);
-        // }
         if (response.ok) {
             console.log('서버로부터 받은 데이터:', data);
             sessionStorage.setItem('user', JSON.stringify(data.user));

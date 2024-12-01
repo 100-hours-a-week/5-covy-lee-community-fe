@@ -10,8 +10,8 @@ window.onload = () => {
     const userEmail = user.email || "user@example.com";
     const userName = user.username || "기본 이름";
     const userImage = user.image
-        ? `http://localhost:3000/profile_images/${user.image}`
-        : "http://localhost:3000/profile_images/profile_img.webp";
+        ? `${window.API_BASE_URL}/profile_images/${user.image}`
+        : `${window.API_BASE_URL}/profile_images/profile_img.webp`;
 
     document.getElementById('emailDisplay').innerText = userEmail;
     document.getElementById('username').value = userName;
@@ -82,7 +82,7 @@ const editProfile = async (event) => {
     }
 
     try {
-        const response = await fetch(`http://localhost:3000/api/user/${userId}`, {
+        const response = await fetch(`${window.API_BASE_URL}/api/user/${userId}`, {
             method: 'PUT',
             body: formData,
         });
@@ -129,7 +129,7 @@ const deleteUser = async () => {
     }
 
     try {
-        const response = await fetch(`http://localhost:3000/api/user/${user.user_id}`, {
+        const response = await fetch(`${window.API_BASE_URL}/api/user/${user.user_id}`, {
             method: "DELETE",
             credentials: "include",
         });

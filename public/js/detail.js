@@ -14,7 +14,7 @@ fetchComments();
 // 조회수 증가
 async function increaseViewCount() {
     try {
-        const response = await fetch(`http://localhost:3000/api/posts/${postId}/views`, {
+        const response = await fetch(`${window.API_BASE_URL}/api/posts/${postId}/views`, {
             method: "PATCH",
             credentials: "include",
         });
@@ -31,7 +31,7 @@ async function increaseViewCount() {
 // 게시글 정보 가져오기
 async function fetchPost() {
     try {
-        const response = await fetch(`http://localhost:3000/api/posts/${postId}`, {
+        const response = await fetch(`${window.API_BASE_URL}/api/posts/${postId}`, {
             method: "GET",
             credentials: "include",
         });
@@ -44,27 +44,25 @@ async function fetchPost() {
         document.getElementById("postUsername").innerText = post.author || "작성자 정보 없음";
         document.getElementById("editButton").href = `edit.html?id=${postId}`;
         document.getElementById("postImage").src = post.image
-            ? `http://localhost:3000/post_images/${post.image}`
-            : `http://localhost:3000/post_images/default-image.jpg`;
+            ? `${window.API_BASE_URL}/post_images/${post.image}`
+            : `${window.API_BASE_URL}/post_images/default-image.jpg`;
         document.getElementById("postComment").innerText = post.comment || 0;
 
         // 작성자 프로필 이미지 설정
         const profileImage = document.getElementById("postUserProfile");
-        profileImage.src = post.author_image // 백엔드 응답 필드 확인
-            ? `http://localhost:3000/profile_images/${post.author_image}`
-            : `http://localhost:3000/profile_images/default-profile.jpg`;
+        profileImage.src = post.author_image
+            ? `${window.API_BASE_URL}/profile_images/${post.author_image}`
+            : `${window.API_BASE_URL}/profile_images/default-profile.jpg`;
     } catch (error) {
         console.error(error.message);
         alert("게시글을 불러오는 데 문제가 발생했습니다.");
     }
 }
 
-
-
 // 좋아요 상태 초기화
 async function initializeLikeStatus() {
     try {
-        const response = await fetch(`http://localhost:3000/api/posts/${postId}/like-status`, {
+        const response = await fetch(`${window.API_BASE_URL}/api/posts/${postId}/like-status`, {
             method: "GET",
             credentials: "include",
         });
@@ -84,7 +82,7 @@ async function initializeLikeStatus() {
 // 좋아요 토글
 document.getElementById("likeButton").addEventListener("click", async () => {
     try {
-        const response = await fetch(`http://localhost:3000/api/posts/${postId}/like`, {
+        const response = await fetch(`${window.API_BASE_URL}/api/posts/${postId}/like`, {
             method: "POST",
             credentials: "include",
         });
@@ -104,7 +102,7 @@ document.getElementById("likeButton").addEventListener("click", async () => {
 // 좋아요 수 업데이트
 async function updateLikeCount() {
     try {
-        const response = await fetch(`http://localhost:3000/api/posts/${postId}/likes`, {
+        const response = await fetch(`${window.API_BASE_URL}/api/posts/${postId}/likes`, {
             method: "GET",
             credentials: "include",
         });
@@ -118,14 +116,12 @@ async function updateLikeCount() {
     }
 }
 
-
-
 // 좋아요 토글
 document.getElementById("likeButton").addEventListener("click", toggleLike);
 
 async function toggleLike() {
     try {
-        const response = await fetch(`http://localhost:3000/api/posts/${postId}/like`, {
+        const response = await fetch(`${window.API_BASE_URL}/api/posts/${postId}/like`, {
             method: "POST",
             credentials: "include",
         });
@@ -151,11 +147,10 @@ async function toggleLike() {
     }
 }
 
-
 // 댓글 목록 가져오기
 async function fetchComments() {
     try {
-        const response = await fetch(`http://localhost:3000/posts/${postId}/comments`, {
+        const response = await fetch(`${window.API_BASE_URL}/posts/${postId}/comments`, {
             method: "GET",
             credentials: "include", // 쿠키 포함
         });
@@ -188,7 +183,7 @@ const submitComment = async () => {
     }
 
     try {
-        const response = await fetch(`http://localhost:3000/api/posts/${postId}/comments`, {
+        const response = await fetch(`${window.API_BASE_URL}/api/posts/${postId}/comments`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -243,8 +238,8 @@ function addCommentToList(comment) {
 
     const authorImage = document.createElement("img");
     authorImage.src = comment.author_image
-        ? `http://localhost:3000/profile_images/${comment.author_image}`
-        : `http://localhost:3000/profile_images/default-profile.jpg`;
+        ? `${window.API_BASE_URL}/profile_images/${comment.author_image}`
+        : `${window.API_BASE_URL}/profile_images/default-profile.jpg`;
     authorImage.alt = "작성자 이미지";
     authorImage.style.width = "30px";
     authorImage.style.height = "30px";
@@ -297,9 +292,6 @@ function addCommentToList(comment) {
     commentList.prepend(commentDiv);
 }
 
-
-
-
 // 댓글 수정
 function editComment(commentId) {
     const commentDiv = document.querySelector(`[data-id='${commentId}']`);
@@ -347,7 +339,7 @@ function editComment(commentId) {
         }
 
         try {
-            const response = await fetch(`http://localhost:3000/api/comments/${commentId}`, {
+            const response = await fetch(`${window.API_BASE_URL}/api/comments/${commentId}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 credentials: "include",
@@ -380,7 +372,7 @@ async function deleteComment(commentId) {
     }
 
     try {
-        const response = await fetch(`http://localhost:3000/api/comments/${commentId}`, {
+        const response = await fetch(`${window.API_BASE_URL}/api/comments/${commentId}`, {
             method: "DELETE",
             credentials: "include",
         });
@@ -398,7 +390,6 @@ async function deleteComment(commentId) {
     }
 }
 
-
 // 버튼 초기화 함수
 function resetButtons(commentDiv) {
     const actionsDiv = commentDiv.querySelector(".comment-actions");
@@ -412,8 +403,6 @@ function resetButtons(commentDiv) {
     deleteButton.onclick = () => deleteComment(commentDiv.getAttribute("data-id"));
 }
 
-
-
 // 댓글 수 업데이트
 function updateCommentCount() {
     const commentCount = document.getElementById("commentList").children.length;
@@ -421,10 +410,9 @@ function updateCommentCount() {
 }
 
 // 게시글 삭제
-
 async function deletePost() {
     try {
-        const response = await fetch(`http://localhost:3000/api/posts/${postId}`, {
+        const response = await fetch(`${window.API_BASE_URL}/api/posts/${postId}`, {
             method: "DELETE",
             credentials: "include",
         });
@@ -459,4 +447,3 @@ function confirmDelete() {
     deletePost();
     closeModal();
 }
-

@@ -42,7 +42,7 @@ document.querySelector('.submit-button').addEventListener('click', async () => {
     }
 
     try {
-        const response = await fetch('http://localhost:3000/api/posts', {
+        const response = await fetch(`${window.API_BASE_URL}/api/posts`, {
             method: 'POST',
             body: formData,
             credentials: 'include' // 세션 쿠키 포함
