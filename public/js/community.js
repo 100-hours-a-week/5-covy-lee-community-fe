@@ -7,7 +7,7 @@ let filteredPosts = []; // 필터된 게시글을 저장할 변수
 
 const checkSession = async () => {
     try {
-        const response = await fetch('http://localhost:3000/api/check-session', {
+        const response = await fetch(`${window.API_BASE_URL}/api/check-session`, {
             method: 'GET',
             credentials: 'include'
         });
@@ -30,8 +30,7 @@ const checkSession = async () => {
                 image: serverUser.image
             }));
 
-            // userImage 등 중복 항목 제거
-            sessionStorage.removeItem('userImage');
+            sessionStorage.removeItem('userImage'); // userImage 등 중복 항목 제거
             console.log('세션 정보가 갱신되었습니다:', serverUser);
         } else {
             console.error('No user data in server session.');
@@ -43,16 +42,13 @@ const checkSession = async () => {
     }
 };
 
-
 // 페이지가 로드될 때 세션 체크
 window.onload = checkSession;
-
-
 
 // 게시글을 가져오는 함수
 const fetchPosts = async () => {
     try {
-        const response = await fetch('http://localhost:3000/api/posts', {
+        const response = await fetch(`${window.API_BASE_URL}/api/posts`, {
             method: 'GET',
             credentials: 'include' // 쿠키 포함 설정
         });
@@ -67,11 +63,11 @@ const fetchPosts = async () => {
 
         const fetchedPosts = await response.json(); // 게시물 데이터 가져오기
 
-        // posts와 filteredPosts를 동기화
         posts = fetchedPosts.map(post => ({
             ...post,
             views: post.views || 0 // 조회수 기본값 설정
         }));
+
         filteredPosts = [...posts]; // posts를 기반으로 초기화
 
         totalPages = Math.ceil(filteredPosts.length / postsPerPage); // 총 페이지 수 계산
@@ -82,8 +78,6 @@ const fetchPosts = async () => {
         alert(error.message);
     }
 };
-
-
 
 // 게시글을 화면에 표시하는 함수
 const displayPosts = () => {
@@ -102,16 +96,14 @@ const displayPosts = () => {
 
     postsToDisplay.forEach(post => {
         const profileImageUrl = post.author_image
-            ? `http://localhost:3000/profile_images/${post.author_image}`
-            : 'http://localhost:3000/profile_images/default-profile.jpg'; // 기본 이미지 경로
+            ? `${window.API_BASE_URL}/profile_images/${post.author_image}`
+            : `${window.API_BASE_URL}/profile_images/default-profile.jpg`; // 기본 이미지 경로
 
         const card = document.createElement('div');
         card.classList.add('card');
 
-        // 카드 전체를 클릭하면 상세 페이지로 이동
-        card.onclick = () => showDetails(post.id);
+        card.onclick = () => showDetails(post.id); // 카드 전체를 클릭하면 상세 페이지로 이동
 
-        // 작성일자 및 시간 포맷팅 (24시간 표기법)
         const createdAt = new Date(post.created_at);
         const formattedDate = `${createdAt.toLocaleDateString()} ${createdAt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}`;
 
@@ -138,17 +130,6 @@ const displayPosts = () => {
 
     updatePagination();
 };
-
-
-
-
-
-
-
-
-
-
-
 
 // 페이지네이션 업데이트 함수
 const updatePagination = () => {
@@ -208,20 +189,16 @@ const showDetails = (postId) => {
 const searchPosts = () => {
     const searchInput = document.getElementById('searchInput').value.toLowerCase();
 
-    // 검색 결과 필터링
     filteredPosts = posts.filter(post =>
         post.title.toLowerCase().includes(searchInput) || // 제목 검색
         post.author.toLowerCase().includes(searchInput)  // 작성자 검색
     );
 
-    // 페이지와 게시글 갱신
-    currentPage = 1;
+    currentPage = 1; // 페이지와 게시글 갱신
     totalPages = Math.ceil(filteredPosts.length / postsPerPage);
 
     displayPosts();
 };
-
-
 
 // 페이지 클릭 시 드롭다운 숨기는 함수
 window.onclick = (event) => {
@@ -238,5 +215,6 @@ window.onclick = (event) => {
 
 // 페이지 로드 시 게시글 가져오기
 fetchPosts();
+
 
 

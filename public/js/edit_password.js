@@ -1,7 +1,7 @@
 window.onload = async () => {
     try {
         // 서버에서 현재 세션 정보 가져오기
-        const response = await fetch('http://localhost:3000/api/check-session', {
+        const response = await fetch(`${window.API_BASE_URL}/api/check-session`, {
             method: 'GET',
             credentials: 'include', // 쿠키 포함
         });
@@ -77,7 +77,7 @@ document.getElementById("editForm").addEventListener("submit", async (e) => {
     const confirmPassword = document.getElementById("password_check").value;
 
     try {
-        const response = await fetch('http://localhost:3000/api/user/password', {
+        const response = await fetch(`${window.API_BASE_URL}/api/user/password`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
