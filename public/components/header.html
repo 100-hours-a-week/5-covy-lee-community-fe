@@ -21,6 +21,18 @@
             z-index: 1000; /* 다른 요소 위에 표시 */
         }
 
+        .hover-title {
+            cursor: pointer; /* 포인터 커서 추가 */
+            transition: color 0.3s ease, transform 0.3s ease, text-shadow 0.3s ease; /* 부드러운 전환 효과 */
+        }
+
+        .hover-title:hover {
+            color: #bf3471;
+            transform: scale(1.1);
+            text-shadow: 2px 4px 8px rgba(0, 0, 0, 0.3); /* 부드러운 그림자 추가 */
+        }
+
+
         header h1 {
             margin: 0; /* 기본 여백 제거 */
             font-size: 2em; /* 제목 크기 조절 */
@@ -50,16 +62,16 @@
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* 그림자 효과 */
         }
 
+
         .profile-button img {
             width: 100%; /* 이미지 너비 */
             height: 100%; /* 이미지 높이 */
             object-fit: cover; /* 비율 유지하며 자르기 */
         }
-        .profile-button:hover img {
-            transform: scale(1.1); /* 이미지를 10% 확대 */
-            transition: transform 0.3s ease; /* 부드러운 전환 효과 */
-            filter: brightness(1.2); /* 밝기를 조금 높이기 */
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* 호버 시 그림자 효과 */
+
+        .profile-button:hover {
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3); /* 그림자를 더 부드럽고 깊이감 있게 수정 */
+            transform: translateY(-2px); /* 살짝 위로 올리는 효과 추가로 입체감을 줌 */
         }
 
 
@@ -127,7 +139,7 @@
 </head>
 <body>
 <header>
-    <h1 onclick="location.href='community.html';" style="cursor: pointer;">아무말 대잔치</h1>
+    <h1 class="hover-title" onclick="location.href='community.html';">아무말 대잔치</h1>
     <button class="back-button" onclick="history.back();">&lt;</button>
     <div class="horizontal-rule"></div>
 
