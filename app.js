@@ -2,7 +2,7 @@ const express = require('express');
 const path = require('path');
 
 const app = express();
-const PORT = 5050; // 원하는 포트 번호로 설정
+const PORT = process.env.PORT || 5050; // 원하는 포트 번호로 설정
 
 // 정적 파일 제공을 위한 미들웨어 설정
 app.use(express.static(path.join(__dirname, 'public')));

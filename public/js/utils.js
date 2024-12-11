@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (profileImage) {
                     profileImage.src = userImage ?
                         `${window.API_BASE_URL}/profile_images/${userImage}` :
-                        `${window.API_BASE_URL}/profile_images/default_profile_img.webp`;
+                        `${window.API_BASE_URL}/profile_images/profile_img.webp`;
                 }
 
                 // 이벤트 리스너 추가 (드롭다운 토글, 로그아웃 등)
