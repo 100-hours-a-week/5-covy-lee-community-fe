@@ -137,7 +137,7 @@ h1#postTitle {
 .comment {
     position: relative; /* 자식 요소를 기준으로 배치 */
     padding: 10px;
-    border: 1px solid #ccc;
+    border: none;
     border-radius: 5px;
     margin-bottom: 10px;
     overflow: hidden; /* 자식 요소가 컨테이너를 벗어나지 않도록 설정 */
