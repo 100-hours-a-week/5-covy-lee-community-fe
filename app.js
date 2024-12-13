@@ -7,7 +7,7 @@ const PORT = process.env.PORT || 5050; // 원하는 포트 번호로 설정
 // 정적 파일 제공을 위한 미들웨어 설정
 app.use(express.static(path.join(__dirname, 'public')));
 
-// 로그인 페이지 라우트 설정
+// 로
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'login.html'));
 });
