@@ -39,25 +39,42 @@ async function fetchPost() {
         if (!response.ok) throw new Error("게시글 정보 가져오기 실패");
 
         const post = await response.json();
+        const currentUser = JSON.parse(sessionStorage.getItem("user")); // 현재 로그인한 사용자 정보
+
+        // 게시글 정보 렌더링
         document.getElementById("postTitle").innerText = post.title || "제목 없음";
         document.getElementById("postContent").innerText = post.content || "내용 없음";
         document.getElementById("postUsername").innerText = post.author || "작성자 정보 없음";
-        document.getElementById("editButton").href = `edit.html?id=${postId}`;
         document.getElementById("postImage").src = post.image
             ? `${window.API_BASE_URL}/post_images/${post.image}`
-            : `${window.API_BASE_URL}/post_images/default-image.jpg`;
-        document.getElementById("postComment").innerText = post.comment || 0;
+            : `${window.API_BASE_URL}/default_images/default_post.jpg`;
+        document.getElementById("postComment").innerText = post.comment_count || 0;
+        document.getElementById("postLike").innerText = post.like_count || 0;
+        document.getElementById("postVisitor").innerText = post.views || 0;
 
         // 작성자 프로필 이미지 설정
         const profileImage = document.getElementById("postUserProfile");
         profileImage.src = post.author_image
             ? `${window.API_BASE_URL}/profile_images/${post.author_image}`
-            : `${window.API_BASE_URL}/profile_images/default-profile.jpg`;
+            : `${window.API_BASE_URL}/default_images/default_profile.webp`;
+
+        // 작성자인 경우에만 수정/삭제 버튼 표시
+        const editButton = document.getElementById("editButton");
+        const deleteButton = document.querySelector(".delete-button");
+
+        if (currentUser && currentUser.user_id === post.author_id) {
+            editButton.style.display = "inline-block"; // 수정 버튼 표시
+            deleteButton.style.display = "inline-block"; // 삭제 버튼 표시
+        } else {
+            editButton.style.display = "none"; // 수정 버튼 숨김
+            deleteButton.style.display = "none"; // 삭제 버튼 숨김
+        }
     } catch (error) {
         console.error(error.message);
         alert("게시글을 불러오는 데 문제가 발생했습니다.");
     }
 }
+
 
 // 좋아요 상태 초기화
 async function initializeLikeStatus() {
@@ -217,6 +234,8 @@ const submitComment = async () => {
 
 function addCommentToList(comment) {
     const commentList = document.getElementById("commentList");
+    const currentUser = JSON.parse(sessionStorage.getItem("user")); // 현재 로그인한 사용자 정보
+    const isAuthor = currentUser && currentUser.user_id === comment.author_id; // 작성자인지 확인
 
     // 댓글 컨테이너
     const commentDiv = document.createElement("div");
@@ -239,7 +258,7 @@ function addCommentToList(comment) {
     const authorImage = document.createElement("img");
     authorImage.src = comment.author_image
         ? `${window.API_BASE_URL}/profile_images/${comment.author_image}`
-        : `${window.API_BASE_URL}/profile_images/default-profile.jpg`;
+        : `${window.API_BASE_URL}/default_images/default_profile.webp`;
     authorImage.alt = "작성자 이미지";
     authorImage.style.width = "30px";
     authorImage.style.height = "30px";
@@ -259,26 +278,28 @@ function addCommentToList(comment) {
     const createdAt = new Date(comment.created_at);
     dateDiv.textContent = !isNaN(createdAt) ? createdAt.toLocaleString() : "알 수 없는 날짜";
 
-    // 수정/삭제 버튼
+    // 수정/삭제 버튼 (작성자만 표시)
     const commentActionsDiv = document.createElement("div");
     commentActionsDiv.classList.add("comment-actions");
     commentActionsDiv.style.display = "flex";
 
-    const editButton = document.createElement("button");
-    editButton.textContent = "수정";
-    editButton.onclick = () => editComment(comment.comment_id);
+    if (isAuthor) {
+        const editButton = document.createElement("button");
+        editButton.textContent = "수정";
+        editButton.onclick = () => editComment(comment.comment_id);
 
-    const deleteButton = document.createElement("button");
-    deleteButton.textContent = "삭제";
-    deleteButton.onclick = () => deleteComment(comment.comment_id);
+        const deleteButton = document.createElement("button");
+        deleteButton.textContent = "삭제";
+        deleteButton.onclick = () => deleteComment(comment.comment_id);
 
-    commentActionsDiv.appendChild(editButton);
-    commentActionsDiv.appendChild(deleteButton);
+        commentActionsDiv.appendChild(editButton);
+        commentActionsDiv.appendChild(deleteButton);
+    }
 
     // 헤더 조립
     commentHeaderDiv.appendChild(authorInfoDiv); // 작성자 정보
     commentHeaderDiv.appendChild(dateDiv); // 작성일자
-    commentHeaderDiv.appendChild(commentActionsDiv); // 수정/삭제 버튼
+    commentHeaderDiv.appendChild(commentActionsDiv); // 수정/삭제 버튼 (작성자만 추가)
 
     // 댓글 내용
     const contentDiv = document.createElement("div");
@@ -291,6 +312,7 @@ function addCommentToList(comment) {
 
     commentList.prepend(commentDiv);
 }
+
 
 // 댓글 수정
 function editComment(commentId) {
