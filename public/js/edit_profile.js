@@ -11,7 +11,7 @@ window.onload = () => {
     const userName = user.username || "기본 이름";
     const userImage = user.image
         ? `${window.API_BASE_URL}/profile_images/${user.image}`
-        : `${window.API_BASE_URL}/profile_images/profile_img.webp`;
+        : `${window.API_BASE_URL}/default_images/default_profile.webp`;
 
     document.getElementById('emailDisplay').innerText = userEmail;
     document.getElementById('username').value = userName;
