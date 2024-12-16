@@ -48,8 +48,6 @@ const previewImage = (event) => {
     }
 };
 
-
-
 // 프로필 이미지 변경 텍스트 표시/숨기기
 const showChangeText = (element) => {
     element.querySelector('.change-text').style.display = 'block';
@@ -58,6 +56,61 @@ const showChangeText = (element) => {
 const hideChangeText = (element) => {
     element.querySelector('.change-text').style.display = 'none';
 };
+
+// 닉네임 중복 검사 함수
+let usernameDebounceTimeout;
+
+const validateUsername = async () => {
+    const usernameInput = document.getElementById('username');
+    const usernameValue = usernameInput.value.trim(); // 입력값의 공백 제거
+    const usernameError = document.getElementById('usernameError');
+
+    // 입력값이 비어있는 경우
+    if (usernameValue === "") {
+        usernameError.textContent = "닉네임은 필수 입력 항목입니다.";
+        usernameError.style.color = "red";
+        usernameError.style.display = "block";
+        return false; // 함수 종료
+    }
+
+    // 닉네임 형식 검사 (공백 없이 1~10자)
+    const usernamePattern = /^[^\s]{1,10}$/;
+    if (!usernamePattern.test(usernameValue)) {
+        usernameError.textContent = "닉네임은 공백 없이 1~10자여야 합니다.";
+        usernameError.style.color = "red";
+        usernameError.style.display = "block";
+        return false; // 함수 종료
+    }
+
+    // 디바운스를 적용하여 API 호출 최적화
+    clearTimeout(usernameDebounceTimeout);
+    return new Promise((resolve) => {
+        usernameDebounceTimeout = setTimeout(async () => {
+            try {
+                const response = await fetch(`${window.API_BASE_URL}/api/check-username?username=${usernameValue}`);
+                if (response.ok) {
+                    usernameError.textContent = "사용 가능한 닉네임입니다.";
+                    usernameError.style.color = "green";
+                    usernameError.style.display = "block";
+                    resolve(true); // 닉네임 사용 가능
+                } else {
+                    const data = await response.json();
+                    usernameError.textContent = data.message || "이미 사용 중인 닉네임입니다.";
+                    usernameError.style.color = "red";
+                    usernameError.style.display = "block";
+                    resolve(false); // 닉네임 중복
+                }
+            } catch (error) {
+                console.error("닉네임 중복 검사 중 오류 발생:", error);
+                usernameError.textContent = "중복 검사 실패. 다시 시도해주세요.";
+                usernameError.style.color = "red";
+                usernameError.style.display = "block";
+                resolve(false); // 서버 오류
+            }
+        }, 300); // 300ms 디바운스 적용
+    });
+};
+
 
 // 회원정보 수정
 const editProfile = async (event) => {
@@ -72,10 +125,17 @@ const editProfile = async (event) => {
     }
 
     const userId = user.user_id;
-    const formData = new FormData();
     const username = document.getElementById('username').value;
     const fileInput = document.getElementById('fileInput').files[0];
 
+    // 닉네임 중복 검사
+    const isUsernameValid = await validateUsername();
+    if (!isUsernameValid) {
+        return;
+    }
+
+    // 중복 검사가 통과되면 회원정보 수정 요청 진행
+    const formData = new FormData();
     formData.append('username', username);
     if (fileInput) {
         formData.append('profilePic', fileInput);
@@ -149,8 +209,7 @@ const deleteUser = async () => {
     }
 };
 
-// 회원탈퇴 버튼 클릭 이벤트 추가
+// 이벤트 리스너 추가
 document.getElementById('withdrawButton').addEventListener('click', deleteUser);
 document.getElementById('editForm').addEventListener('submit', editProfile);
-
-
+document.getElementById('username').addEventListener('input', validateUsername);
