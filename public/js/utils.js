@@ -51,12 +51,30 @@ document.addEventListener('DOMContentLoaded', function() {
     loadUserDataAndHeader(); // 함수 호출
 });
 
+const utils = async () => {
+    try {
+        // 서버 로그아웃 API 호출
+        const response = await fetch(`${window.API_BASE_URL}/api/logout`, {
+            method: 'POST',
+            credentials: 'include'
+        });
 
-const utils = () => {
-    sessionStorage.clear(); // 세션 스토리지 데이터 삭제
-    alert('로그아웃 되었습니다.');
-    window.location.href = './login.html'; // 로그인 페이지로 이동
+        if (response.ok) {
+            // 클라이언트 세션 스토리지 삭제
+            sessionStorage.clear();
+            alert('로그아웃 되었습니다.');
+
+            // 로그인 페이지로 리디렉션
+            window.location.href = './login.html';
+        } else {
+            alert('로그아웃에 실패했습니다. 다시 시도해주세요.');
+        }
+    } catch (error) {
+        console.error('로그아웃 중 오류:', error);
+        alert('서버와 통신 중 오류가 발생했습니다.');
+    }
 };
+
 
 // 드롭다운 메뉴 토글 함수
 function toggleDropdown() {
