@@ -18,8 +18,8 @@ if (!postId) {
             }
             const post = await response.json();
             // 수정 폼에 기존 게시글 내용 세팅
-            document.getElementById('postTitle').value = post.title;
-            document.getElementById('postContent').value = post.content;
+            document.getElementById('postTitle').value = post.title.trim();
+            document.getElementById('postContent').value = post.content.trim();
         } catch (error) {
             console.error('게시글 가져오기 오류:', error);
             alert('게시글을 불러오는 데 문제가 발생했습니다.');
@@ -29,14 +29,30 @@ if (!postId) {
     fetchPost();
 }
 
+// 제목 입력 길이 제한 및 공백 처리
+const postTitleInput = document.getElementById('postTitle');
+postTitleInput.addEventListener('input', () => {
+    postTitleInput.value = postTitleInput.value.replace(/^\s+/, ''); // 앞쪽 공백 제거
+    if (postTitleInput.value.length > 26) {
+        postTitleInput.value = postTitleInput.value.slice(0, 26); // 최대 26자 제한
+    }
+});
+
 // 게시글 수정 제출 함수
 const submitEdit = async () => {
-    const postTitle = document.getElementById('postTitle').value;
-    const postContent = document.getElementById('postContent').value;
+    const postTitle = document.getElementById('postTitle').value.trim(); // 앞뒤 공백 제거
+    const postContent = document.getElementById('postContent').value.trim(); // 앞뒤 공백 제거
     const imageInput = document.getElementById('image');
 
-    if (!postTitle || !postContent) {
+    // 제목 및 내용 검증
+    if (!postTitle && !postContent) {
         alert('제목과 내용을 입력하세요.');
+        return;
+    } else if (!postTitle) {
+        alert('제목을 입력하세요. 공백만 입력할 수 없습니다.');
+        return;
+    } else if (!postContent) {
+        alert('내용을 입력하세요. 공백만 입력할 수 없습니다.');
         return;
     }
 
@@ -80,5 +96,6 @@ window.onclick = (event) => {
         }
     }
 };
+
 
 
