@@ -168,7 +168,7 @@ async function toggleLike() {
 // 댓글 목록 가져오기
 async function fetchComments() {
     try {
-        const response = await fetch(`${window.API_BASE_URL}/posts/${postId}/comments`, {
+        const response = await fetch(`${window.API_BASE_URL}/api/posts/${postId}/comments`, {
             method: "GET",
             credentials: "include", // 쿠키 포함
         });
