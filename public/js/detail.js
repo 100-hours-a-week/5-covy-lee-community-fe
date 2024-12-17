@@ -65,6 +65,7 @@ async function fetchPost() {
         if (currentUser && currentUser.user_id === post.author_id) {
             editButton.style.display = "inline-block"; // 수정 버튼 표시
             deleteButton.style.display = "inline-block"; // 삭제 버튼 표시
+            editButton.href = `edit.html?id=${post.id}`; // 수정 버튼에 postId 동적 바인딩
         } else {
             editButton.style.display = "none"; // 수정 버튼 숨김
             deleteButton.style.display = "none"; // 삭제 버튼 숨김

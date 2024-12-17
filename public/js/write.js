@@ -7,16 +7,31 @@ window.onload = () => {
         window.location.href = './login.html'; // 로그인 페이지로 이동
         return;
     }
+
+    // 제목 입력 필드 길이 제한 및 공백 처리
+    const titleInput = document.getElementById('title');
+    titleInput.addEventListener('input', () => {
+        titleInput.value = titleInput.value.replace(/^\s+/, ''); // 앞쪽 공백 제거
+        if (titleInput.value.length > 26) {
+            titleInput.value = titleInput.value.slice(0, 26); // 초과된 부분 잘라냄
+        }
+    });
 };
 
 document.querySelector('.submit-button').addEventListener('click', async () => {
-    const title = document.getElementById('title').value;
-    const content = document.getElementById('content').value;
+    let title = document.getElementById('title').value.trim(); // 제목 공백 제거
+    let content = document.getElementById('content').value.trim(); // 내용 공백 제거
     const image = document.getElementById('image').files[0];
 
-    // 폼 유효성 검사
-    if (!title || !content) {
-        alert("제목과 내용을 입력하세요.");
+    // 제목과 내용 유효성 검사 및 메시지 분리
+    if (!title && !content) {
+        alert("제목과 내용을 모두 입력하세요.");
+        return;
+    } else if (!title) {
+        alert("제목을 입력하세요. 공백만 입력할 수 없습니다.");
+        return;
+    } else if (!content) {
+        alert("내용을 입력하세요. 공백만 입력할 수 없습니다.");
         return;
     }
 
@@ -61,5 +76,3 @@ document.querySelector('.submit-button').addEventListener('click', async () => {
         alert('서버와의 연결에 실패했습니다.');
     }
 });
-
-
