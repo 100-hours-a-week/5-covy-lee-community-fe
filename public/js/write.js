@@ -16,12 +16,28 @@ window.onload = () => {
             titleInput.value = titleInput.value.slice(0, 26); // 초과된 부분 잘라냄
         }
     });
+
+    // 내용 입력 필드 길이 제한 및 공백 처리
+    const contentInput = document.getElementById('content');
+    const maxContentLength = 5000; // 글자 수 제한 설정 (예: 2000자)
+    contentInput.addEventListener('input', () => {
+        if (contentInput.value.length > maxContentLength) {
+            contentInput.value = contentInput.value.slice(0, maxContentLength); // 초과된 부분 잘라냄
+            alert(`게시글 내용은 최대 ${maxContentLength}자까지 작성 가능합니다.`);
+        }
+    });
 };
 
 document.querySelector('.submit-button').addEventListener('click', async () => {
     let title = document.getElementById('title').value.trim(); // 제목 공백 제거
     let content = document.getElementById('content').value.trim(); // 내용 공백 제거
     const image = document.getElementById('image').files[0];
+
+    const maxContentLength = 2000; // 동일한 글자 제한 적용
+    if (content.length > maxContentLength) {
+        alert(`게시글 내용은 최대 ${maxContentLength}자까지 작성 가능합니다.`);
+        return;
+    }
 
     // 제목과 내용 유효성 검사 및 메시지 분리
     if (!title && !content) {
@@ -76,3 +92,4 @@ document.querySelector('.submit-button').addEventListener('click', async () => {
         alert('서버와의 연결에 실패했습니다.');
     }
 });
+
