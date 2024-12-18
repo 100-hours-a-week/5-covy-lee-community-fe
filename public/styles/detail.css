@@ -25,6 +25,9 @@ h1 {
     color: #555;
     line-height: 1.6;
     margin: 20px 0;
+    word-wrap: break-word; /* 긴 단어를 줄 바꿈 */
+    overflow-wrap: break-word; /* 브라우저에 따라 word-wrap 대체 */
+    white-space: normal; /* 텍스트가 한 줄로 늘어나지 않게 */
 }
 
 .header {
