@@ -58,11 +58,12 @@ const hideChangeText = (element) => {
 };
 
 // 닉네임 중복 검사 함수
-let usernameDebounceTimeout;
+let usernameAbortController;
 
 const validateUsername = async () => {
+    const user = JSON.parse(sessionStorage.getItem('user'));
     const usernameInput = document.getElementById('username');
-    const usernameValue = usernameInput.value.trim(); // 입력값의 공백 제거
+    const usernameValue = usernameInput.value.trim();
     const usernameError = document.getElementById('usernameError');
 
     // 입력값이 비어있는 경우
@@ -70,46 +71,65 @@ const validateUsername = async () => {
         usernameError.textContent = "닉네임은 필수 입력 항목입니다.";
         usernameError.style.color = "red";
         usernameError.style.display = "block";
-        return false; // 함수 종료
+        return false;
     }
 
-    // 닉네임 형식 검사 (공백 없이 1~10자)
+    // 현재 닉네임과 동일한 경우
+    if (usernameValue === user.username) {
+        usernameError.textContent = ""; // 메시지 초기화
+        usernameError.style.display = "none"; // 숨김
+        return true;
+    }
+
+    // 닉네임 형식 검사
     const usernamePattern = /^[^\s]{1,10}$/;
     if (!usernamePattern.test(usernameValue)) {
         usernameError.textContent = "닉네임은 공백 없이 1~10자여야 합니다.";
         usernameError.style.color = "red";
         usernameError.style.display = "block";
-        return false; // 함수 종료
+        return false;
     }
 
-    // 디바운스를 적용하여 API 호출 최적화
-    clearTimeout(usernameDebounceTimeout);
-    return new Promise((resolve) => {
-        usernameDebounceTimeout = setTimeout(async () => {
-            try {
-                const response = await fetch(`${window.API_BASE_URL}/api/check-username?username=${usernameValue}`);
-                if (response.ok) {
-                    usernameError.textContent = "사용 가능한 닉네임입니다.";
-                    usernameError.style.color = "green";
-                    usernameError.style.display = "block";
-                    resolve(true); // 닉네임 사용 가능
-                } else {
-                    const data = await response.json();
-                    usernameError.textContent = data.message || "이미 사용 중인 닉네임입니다.";
-                    usernameError.style.color = "red";
-                    usernameError.style.display = "block";
-                    resolve(false); // 닉네임 중복
-                }
-            } catch (error) {
-                console.error("닉네임 중복 검사 중 오류 발생:", error);
-                usernameError.textContent = "중복 검사 실패. 다시 시도해주세요.";
-                usernameError.style.color = "red";
-                usernameError.style.display = "block";
-                resolve(false); // 서버 오류
-            }
-        }, 300); // 300ms 디바운스 적용
-    });
+    // 기존 요청 취소
+    if (usernameAbortController) {
+        usernameAbortController.abort();
+    }
+
+    // 새로운 AbortController 생성
+    usernameAbortController = new AbortController();
+
+    try {
+        const response = await fetch(`${window.API_BASE_URL}/api/check-username?username=${usernameValue}`, {
+            signal: usernameAbortController.signal, // 요청에 AbortController 신호 추가
+        });
+
+        if (response.ok) {
+            usernameError.textContent = "사용 가능한 닉네임입니다.";
+            usernameError.style.color = "green";
+            usernameError.style.display = "block";
+            return true;
+        } else {
+            const data = await response.json();
+            usernameError.textContent = data.message || "이미 사용 중인 닉네임입니다.";
+            usernameError.style.color = "red";
+            usernameError.style.display = "block";
+            return false;
+        }
+    } catch (error) {
+        if (error.name === "AbortError") {
+            console.log("이전 요청이 취소되었습니다."); // 디버깅 로그
+            return false;
+        }
+        console.error("닉네임 중복 검사 중 오류 발생:", error);
+        usernameError.textContent = "중복 검사 실패. 다시 시도해주세요.";
+        usernameError.style.color = "red";
+        usernameError.style.display = "block";
+        return false;
+    }
 };
+
+
+
 
 
 // 회원정보 수정
@@ -125,20 +145,23 @@ const editProfile = async (event) => {
     }
 
     const userId = user.user_id;
-    const username = document.getElementById('username').value;
+    const usernameInput = document.getElementById('username');
+    const username = usernameInput.value.trim(); // 닉네임 입력값
     const fileInput = document.getElementById('fileInput').files[0];
 
-    // 닉네임 중복 검사
-    const isUsernameValid = await validateUsername();
-    if (!isUsernameValid) {
-        return;
+    // 닉네임 입력이 있는 경우에만 중복 검사 수행
+    if (username !== user.username) { // 기존 닉네임과 다를 경우에만 검사
+        const isUsernameValid = await validateUsername();
+        if (!isUsernameValid) {
+            return; // 닉네임 중복 검사 실패 시 함수 종료
+        }
     }
 
-    // 중복 검사가 통과되면 회원정보 수정 요청 진행
+    // 회원정보 수정 요청 진행
     const formData = new FormData();
-    formData.append('username', username);
+    formData.append('username', username || user.username); // 닉네임이 비어 있으면 기존 닉네임 유지
     if (fileInput) {
-        formData.append('profilePic', fileInput);
+        formData.append('profilePic', fileInput); // 새로운 프로필 이미지가 있으면 추가
     }
 
     try {
@@ -152,9 +175,9 @@ const editProfile = async (event) => {
 
         if (response.ok) {
             // sessionStorage 업데이트
-            user.username = username;
+            user.username = username || user.username; // 기존 닉네임 유지 또는 새 닉네임 업데이트
             if (result.user.image) {
-                user.image = result.user.image; // 서버에서 반환된 이미지 이름 사용
+                user.image = result.user.image; // 서버에서 반환된 이미지 사용
             }
             sessionStorage.setItem('user', JSON.stringify(user));
             console.log('Updated user saved to sessionStorage:', JSON.parse(sessionStorage.getItem('user')));
@@ -174,6 +197,7 @@ const editProfile = async (event) => {
         alert('서버 오류가 발생했습니다.');
     }
 };
+
 
 // 회원탈퇴 로직 (위 코드 그대로 사용)
 const deleteUser = async () => {
