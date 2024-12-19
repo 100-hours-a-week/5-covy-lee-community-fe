@@ -117,22 +117,31 @@ const validatePasswordMatch = () => {
 };
 
 let usernameDebounceTimeout;
+
 const validateUsername = async () => {
     const usernamePattern = /^[^\s]{1,10}$/;
-    const usernameValue = usernameInput.value;
+    const usernameValue = usernameInput.value.trim(); // 앞뒤 공백 제거
 
+    // 닉네임 입력란이 비어 있는 경우 메시지 숨기기
     if (usernameValue === "") {
-        usernameError.textContent = "";
-        usernameError.style.display = "none";
+        clearTimeout(usernameDebounceTimeout); // 이전 타임아웃 초기화
+        usernameError.textContent = ""; // 메시지 초기화
+        usernameError.style.display = "none"; // 메시지 숨김
         return false;
     }
+
+    // 패턴 확인: 공백 없이 1~10자 조건 확인
     if (!usernamePattern.test(usernameValue)) {
+        clearTimeout(usernameDebounceTimeout); // 이전 타임아웃 초기화
         usernameError.textContent = "사용자 이름은 공백 없이 1~10자여야 합니다.";
+        usernameError.style.color = "red";
         usernameError.style.display = "block";
         return false;
     }
 
     clearTimeout(usernameDebounceTimeout);
+
+    // 중복 검사 API 요청
     return new Promise((resolve) => {
         usernameDebounceTimeout = setTimeout(async () => {
             try {
@@ -162,6 +171,8 @@ const validateUsername = async () => {
         }, 300);
     });
 };
+
+
 
 const checkFormValidity = async () => {
     const isEmailValid = validateEmail();

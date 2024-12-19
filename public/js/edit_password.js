@@ -24,7 +24,8 @@ window.onload = async () => {
 const validatePassword = () => {
     const passwordInput = document.getElementById("password");
     const passwordError = document.getElementById("passwordError");
-    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/;
+    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+=~`|<>?/\\{}[\]:;'",.-])[A-Za-z\d!@#$%^&*()_+=~`|<>?/\\{}[\]:;'",.-]{8,20}$/;
+
 
     if (passwordInput.value === "") {
         passwordError.style.display = "none";

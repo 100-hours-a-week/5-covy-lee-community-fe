@@ -4,7 +4,7 @@ const loginButton = document.getElementById("loginButton");
 const emailError = document.getElementById("emailError");
 const passwordError = document.getElementById("passwordError");
 
-const validateEmail=() => {
+const validateEmail = () => {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (emailInput.value === "") {
         emailError.style.display = "none"; // 비어있을 경우 오류 메시지 숨김
@@ -12,6 +12,7 @@ const validateEmail=() => {
     }
     if (!emailPattern.test(emailInput.value)) {
         emailError.style.display = "block";
+        emailError.textContent = "유효한 이메일 주소를 입력해주세요.";
         return false;
     } else {
         emailError.style.display = "none";
@@ -20,13 +21,14 @@ const validateEmail=() => {
 };
 
 const validatePassword = () => {
-    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/;
+    const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+=~`|<>?/\\{}[\]:;'",.-])[A-Za-z\d!@#$%^&*()_+=~`|<>?/\\{}[\]:;'",.-]{8,20}$/;
     if (passwordInput.value === "") {
         passwordError.style.display = "none"; // 비어있을 경우 오류 메시지 숨김
         return false;
     }
     if (!passwordPattern.test(passwordInput.value)) {
         passwordError.style.display = "block";
+        passwordError.textContent = "비밀번호는 8~20자, 대소문자, 숫자, 특수문자를 포함해야 합니다.";
         return false;
     } else {
         passwordError.style.display = "none";
@@ -38,15 +40,18 @@ const checkFormValidity = () => {
     const isEmailValid = validateEmail();
     const isPasswordValid = validatePassword();
     const formIsValid = isEmailValid && isPasswordValid;
-    loginButton.disabled = !formIsValid; // 버튼 활성화/비활성화
+
+    // 로그인 버튼 활성화/비활성화
+    loginButton.disabled = !formIsValid;
 };
 
-emailInput.addEventListener("input",  () => {
+// 이벤트 리스너 추가
+emailInput.addEventListener("input", () => {
     validateEmail();
     checkFormValidity();
 });
 
-passwordInput.addEventListener("input", ()=>  {
+passwordInput.addEventListener("input", () => {
     validatePassword();
     checkFormValidity();
 });
@@ -55,7 +60,7 @@ passwordInput.addEventListener("input", ()=>  {
 document.getElementById("loginForm").addEventListener("submit", async (event) => {
     event.preventDefault(); // 기본 제출 동작 방지
 
-    const email = emailInput.value;
+    const email = emailInput.value.trim(); // 입력값 정리
     const password = passwordInput.value;
 
     try {
@@ -85,4 +90,5 @@ document.getElementById("loginForm").addEventListener("submit", async (event) =>
         alert('서버와의 통신에 문제가 발생했습니다.');
     }
 });
+
 
