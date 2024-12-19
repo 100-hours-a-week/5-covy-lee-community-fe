@@ -53,9 +53,29 @@ button {
     margin-top: 10px; /* 버튼 위 여백 추가 */
 }
 
-button:hover {
-    background-color: #666488;
+
+#loginButton {
+    background-color: #D5C9DD; /* 비활성화 상태의 배경색 */
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: not-allowed; /* 비활성화 상태에서 커서 */
+    transition: background-color 0.3s ease; /* 부드러운 전환 */
 }
+
+/* 버튼 활성화 상태 */
+#loginButton:enabled {
+    background-color: #666488; /* 활성화 상태의 기본 배경색 */
+    cursor: pointer; /* 활성화 상태에서 커서 */
+}
+
+/* 버튼 활성화 상태에서 hover */
+#loginButton:enabled:hover {
+    background-color: #666488; /* 활성화 상태에서 hover 시 색상 */
+}
+
+
 
 .signup-link {
     color: gray; 
