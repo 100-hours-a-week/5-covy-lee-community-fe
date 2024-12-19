@@ -169,10 +169,11 @@ h1#postTitle {
 
 
 .comment-header {
+    position: relative; /* 날짜를 절대 위치로 배치할 기준 컨테이너 */
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 10px; /* 헤더와 아래 내용 사이 간격 줄이기 */
+    align-items: center; /* 세로 정렬 유지 */
+    justify-content: space-between; /* 작성자 정보와 버튼 배치 */
+    margin-bottom: 10px;
 }
 
 
@@ -183,9 +184,16 @@ h1#postTitle {
 }
 
 .comment-date {
-    font-size: 0.85em;
-    color: #666;
-    margin-right: 10px; /* 수정/삭제 버튼과 간격 */
+    position: absolute; /* 절대 위치 */
+    top: 50%; /* 부모 컨테이너의 세로 중심 */
+    left: 50%; /* 부모 컨테이너의 가로 중심 */
+    transform: translate(-50%, -50%); /* 정중앙으로 보정 */
+    font-size: 0.9em; /* 날짜 글씨 크기 */
+    color: #888; /* 날짜 색상 */
+    background: white; /* 배경색 추가 (겹칠 경우 대비) */
+    padding: 2px 5px; /* 배경 여백 */
+    border-radius: 3px; /* 둥근 모서리 */
+    z-index: 1; /* 다른 요소 위에 위치 */
 }
 
 .comment-actions {
