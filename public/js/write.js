@@ -33,7 +33,7 @@ document.querySelector('.submit-button').addEventListener('click', async () => {
     let content = document.getElementById('content').value.trim(); // 내용 공백 제거
     const image = document.getElementById('image').files[0];
 
-    const maxContentLength = 2000; // 동일한 글자 제한 적용
+    const maxContentLength = 5000; // 동일한 글자 제한 적용
     if (content.length > maxContentLength) {
         alert(`게시글 내용은 최대 ${maxContentLength}자까지 작성 가능합니다.`);
         return;
