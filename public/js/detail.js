@@ -302,10 +302,13 @@ function addCommentToList(comment) {
     commentHeaderDiv.appendChild(dateDiv); // 작성일자
     commentHeaderDiv.appendChild(commentActionsDiv); // 수정/삭제 버튼 (작성자만 추가)
 
-    // 댓글 내용
+    // 댓글 내용 (줄바꿈 처리)
     const contentDiv = document.createElement("div");
     contentDiv.classList.add("comment-content");
-    contentDiv.textContent = comment.content;
+    contentDiv.innerHTML = comment.content
+        .replace(/</g, "&lt;") // HTML 태그 이스케이프
+        .replace(/>/g, "&gt;")
+        .replace(/\n/g, "<br>"); // 줄바꿈을 <br>로 변환
 
     // 댓글 컨테이너에 요소 추가
     commentDiv.appendChild(commentHeaderDiv);
@@ -313,6 +316,7 @@ function addCommentToList(comment) {
 
     commentList.prepend(commentDiv);
 }
+
 
 
 // 댓글 수정
