@@ -11,15 +11,33 @@ if (!postId) {
         try {
             const response = await fetch(`${window.API_BASE_URL}/api/posts/${postId}`, {
                 method: 'GET',
-                credentials: 'include'  // 쿠키를 포함하여 요청을 보냄
+                credentials: 'include' // 쿠키를 포함하여 요청을 보냄
             });
             if (!response.ok) {
                 throw new Error('게시글을 불러오는 데 실패했습니다.');
             }
             const post = await response.json();
+
             // 수정 폼에 기존 게시글 내용 세팅
             document.getElementById('postTitle').value = post.title.trim();
             document.getElementById('postContent').value = post.content.trim();
+
+            // 이미지 이름 표시 및 파일 입력 값 설정
+            const imageInput = document.getElementById('image');
+
+            if (post.image) {
+
+                // File 객체 생성 (더미 데이터로 설정)
+                const myFile = new File([''], post.image, { type: 'image/jpeg' });
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(myFile);
+                imageInput.files = dataTransfer.files;
+
+
+                if (imageInput.webkitEntries.length) {
+                    imageInput.dataset.file = `${dataTransfer.files[0].name}`;
+                }
+            }
         } catch (error) {
             console.error('게시글 가져오기 오류:', error);
             alert('게시글을 불러오는 데 문제가 발생했습니다.');
@@ -28,6 +46,7 @@ if (!postId) {
 
     fetchPost();
 }
+
 
 // 제목 입력 길이 제한 및 공백 처리
 const postTitleInput = document.getElementById('postTitle');

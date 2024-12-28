@@ -323,7 +323,9 @@ function addCommentToList(comment) {
 function editComment(commentId) {
     const commentDiv = document.querySelector(`[data-id='${commentId}']`);
     const contentDiv = commentDiv.querySelector(".comment-content");
-    const originalContent = contentDiv.textContent;
+
+    // 기존 댓글 내용을 가져오면서 <br> 태그를 줄바꿈 문자로 변환
+    const originalContent = contentDiv.innerHTML.replace(/<br>/g, "\n");
 
     // 이미 수정 중인지 확인 후 처리
     const existingEditForm = commentDiv.querySelector(".edit-form");
@@ -341,7 +343,7 @@ function editComment(commentId) {
     // 댓글 입력 폼 생성
     const editForm = document.createElement("textarea");
     editForm.classList.add("edit-form");
-    editForm.value = originalContent;
+    editForm.value = originalContent; // 줄바꿈이 적용된 원본 내용 설정
     editForm.rows = 3;
     editForm.style.width = "100%";
     editForm.style.marginBottom = "10px";
@@ -391,6 +393,7 @@ function editComment(commentId) {
         resetButtons(commentDiv); // 버튼 초기화
     };
 }
+
 
 // 댓글 삭제
 async function deleteComment(commentId) {
@@ -451,11 +454,15 @@ async function deletePost() {
 
         // 삭제 성공 후 페이지 이동
         window.location.href = "./community.html";
+
+        // 강제로 캐시를 무효화하고 새로고침
+        window.location.replace("./community.html"); // 캐시 제거 후 페이지 이동
     } catch (error) {
         console.error(error.message);
         alert("게시글 삭제 중 문제가 발생했습니다."); // 실패 메시지 표시
     }
 }
+
 
 // 모달 열기/닫기
 function showModal() {
