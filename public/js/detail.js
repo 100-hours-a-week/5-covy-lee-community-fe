@@ -454,11 +454,15 @@ async function deletePost() {
 
         // 삭제 성공 후 페이지 이동
         window.location.href = "./community.html";
+
+        // 강제로 캐시를 무효화하고 새로고침
+        window.location.replace("./community.html"); // 캐시 제거 후 페이지 이동
     } catch (error) {
         console.error(error.message);
         alert("게시글 삭제 중 문제가 발생했습니다."); // 실패 메시지 표시
     }
 }
+
 
 // 모달 열기/닫기
 function showModal() {
