@@ -323,7 +323,9 @@ function addCommentToList(comment) {
 function editComment(commentId) {
     const commentDiv = document.querySelector(`[data-id='${commentId}']`);
     const contentDiv = commentDiv.querySelector(".comment-content");
-    const originalContent = contentDiv.textContent;
+
+    // 기존 댓글 내용을 가져오면서 <br> 태그를 줄바꿈 문자로 변환
+    const originalContent = contentDiv.innerHTML.replace(/<br>/g, "\n");
 
     // 이미 수정 중인지 확인 후 처리
     const existingEditForm = commentDiv.querySelector(".edit-form");
@@ -341,7 +343,7 @@ function editComment(commentId) {
     // 댓글 입력 폼 생성
     const editForm = document.createElement("textarea");
     editForm.classList.add("edit-form");
-    editForm.value = originalContent;
+    editForm.value = originalContent; // 줄바꿈이 적용된 원본 내용 설정
     editForm.rows = 3;
     editForm.style.width = "100%";
     editForm.style.marginBottom = "10px";
@@ -391,6 +393,7 @@ function editComment(commentId) {
         resetButtons(commentDiv); // 버튼 초기화
     };
 }
+
 
 // 댓글 삭제
 async function deleteComment(commentId) {
