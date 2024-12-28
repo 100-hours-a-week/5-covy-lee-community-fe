@@ -23,7 +23,6 @@ if (!postId) {
             document.getElementById('postContent').value = post.content.trim();
 
             // 이미지 이름 표시 및 파일 입력 값 설정
-            const currentImageSpan = document.getElementById('currentImage');
             const imageInput = document.getElementById('image');
 
             if (post.image) {
@@ -34,7 +33,7 @@ if (!postId) {
                 dataTransfer.items.add(myFile);
                 imageInput.files = dataTransfer.files;
 
-                // Safari 지원
+
                 if (imageInput.webkitEntries.length) {
                     imageInput.dataset.file = `${dataTransfer.files[0].name}`;
                 }
