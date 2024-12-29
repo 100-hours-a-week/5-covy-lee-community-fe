@@ -6,10 +6,21 @@ if (!postId) {
     throw new Error("게시글 ID가 없습니다.");
 }
 
-initializeLikeStatus();
-increaseViewCount();
-fetchPost();
-fetchComments();
+initializePage();
+
+async function initializePage() {
+    try {
+        // 1. 조회수 증가를 완료하고 조회수 즉시 반영
+        await increaseViewCount();
+        // 2. 게시글 데이터를 가져와 렌더링
+        await fetchPost();
+        // 3. 댓글 및 좋아요 상태 초기화
+        initializeLikeStatus();
+        fetchComments();
+    } catch (error) {
+        console.error("페이지 초기화 중 오류 발생:", error.message);
+    }
+}
 
 // 조회수 증가
 async function increaseViewCount() {
@@ -51,6 +62,7 @@ async function fetchPost() {
         document.getElementById("postComment").innerText = post.comment_count || 0;
         document.getElementById("postLike").innerText = post.like_count || 0;
         document.getElementById("postVisitor").innerText = post.views || 0;
+        console.log("게시글 조회수",post.views);
 
         // 작성자 프로필 이미지 설정
         const profileImage = document.getElementById("postUserProfile");
