@@ -1,3 +1,12 @@
+window.addEventListener('DOMContentLoaded', () => {
+    const user = sessionStorage.getItem('user'); // 세션스토리지에서 유저 정보 가져오기
+    if (!user) {
+        alert('로그인이 필요합니다.');
+        window.location.replace('./login.html'); // 로그인 페이지로 리다이렉트
+    }
+});
+
+
 document.addEventListener('DOMContentLoaded', function() {
     // 세션 데이터가 로드될 때까지 기다리는 함수
     let attempts = 0; // 시도 횟수
@@ -64,8 +73,16 @@ const utils = async () => {
             sessionStorage.clear();
             alert('로그아웃 되었습니다.');
 
-            // 로그인 페이지로 리디렉션
-            window.location.href = './login.html';
+            // 캐시를 방지하기 위한 추가 설정
+            if ('caches' in window) {
+                const cacheNames = await caches.keys();
+                for (const cacheName of cacheNames) {
+                    await caches.delete(cacheName);
+                }
+            }
+
+            // 로그인 페이지로 리디렉션 (캐시 제거 후 이동)
+            window.location.replace('./login.html');
         } else {
             alert('로그아웃에 실패했습니다. 다시 시도해주세요.');
         }
@@ -74,6 +91,8 @@ const utils = async () => {
         alert('서버와 통신 중 오류가 발생했습니다.');
     }
 };
+
+
 
 
 // 드롭다운 메뉴 토글 함수
