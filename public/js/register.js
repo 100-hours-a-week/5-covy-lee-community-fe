@@ -87,6 +87,62 @@ const validateEmail = () => {
     return true;
 };
 
+let emailDebounceTimeout;
+
+const validateEmailDuplication = async () => {
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const emailValue = emailInput.value.trim(); // 앞뒤 공백 제거
+
+    // 이메일 입력란이 비어 있는 경우 메시지 숨기기
+    if (emailValue === "") {
+        clearTimeout(emailDebounceTimeout); // 이전 타임아웃 초기화
+        emailError.textContent = ""; // 메시지 초기화
+        emailError.style.display = "none"; // 메시지 숨김
+        return false;
+    }
+
+    // 이메일 형식 확인
+    if (!emailPattern.test(emailValue)) {
+        clearTimeout(emailDebounceTimeout); // 이전 타임아웃 초기화
+        emailError.textContent = "유효한 이메일 형식을 입력해주세요.";
+        emailError.style.color = "red";
+        emailError.style.display = "block";
+        return false;
+    }
+
+    clearTimeout(emailDebounceTimeout);
+
+    // 중복 검사 API 요청
+    return new Promise((resolve) => {
+        emailDebounceTimeout = setTimeout(async () => {
+            try {
+                const response = await fetch(
+                    `${window.API_BASE_URL}/api/check-email?email=${emailValue}`
+                );
+
+                if (response.ok) {
+                    emailError.textContent = "사용 가능한 이메일입니다.";
+                    emailError.style.color = "green";
+                    emailError.style.display = "block";
+                    resolve(true);
+                } else {
+                    const data = await response.json();
+                    emailError.textContent = data.message || "이미 등록된 이메일입니다.";
+                    emailError.style.color = "red";
+                    emailError.style.display = "block";
+                    resolve(false);
+                }
+            } catch (error) {
+                console.error("이메일 중복 검사 중 오류 발생:", error);
+                emailError.textContent = "중복 검사 실패. 다시 시도해주세요.";
+                emailError.style.color = "red";
+                emailError.style.display = "block";
+                resolve(false);
+            }
+        }, 300);
+    });
+};
+
 const validatePassword = () => {
     const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+=~`|<>?/\\{}[\]:;'",.-])[A-Za-z\d!@#$%^&*()_+=~`|<>?/\\{}[\]:;'",.-]{8,20}$/;
     const passwordValue = passwordInput.value;
@@ -175,7 +231,7 @@ const validateUsername = async () => {
 
 
 const checkFormValidity = async () => {
-    const isEmailValid = validateEmail();
+    const isEmailValid = validateEmail() && await validateEmailDuplication(); // 이메일 중복 검사 포함
     const isPasswordValid = validatePassword();
     const isPasswordMatch = validatePasswordMatch();
     const isUsernameValid = await validateUsername();
@@ -189,6 +245,7 @@ const checkFormValidity = async () => {
 // 이벤트 리스너
 emailInput.addEventListener("input", () => {
     validateEmail();
+    validateEmailDuplication();
     checkFormValidity();
 });
 passwordInput.addEventListener("input", () => {
