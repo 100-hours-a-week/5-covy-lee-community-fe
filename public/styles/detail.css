@@ -216,6 +216,10 @@ h1#postTitle {
 .comment-content {
     font-size: 1em;
     color: #333;
+    word-wrap: break-word; /* 긴 단어를 줄바꿈 */
+    word-break: break-word; /* 모든 언어에 대해 줄바꿈 처리 */
+    overflow-wrap: break-word; /* 최신 브라우저 호환 */
+    white-space: pre-wrap; /* 줄바꿈과 공백 유지 */
 }
 
 
