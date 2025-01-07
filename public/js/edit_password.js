@@ -1,25 +1,3 @@
-window.onload = async () => {
-    try {
-        // 서버에서 현재 세션 정보 가져오기
-        const response = await fetch(`${window.API_BASE_URL}/api/check-session`, {
-            method: 'GET',
-            credentials: 'include', // 쿠키 포함
-        });
-
-        if (response.ok) {
-            const result = await response.json();
-            console.log('User session from server:', result.user);
-            sessionStorage.setItem('user', JSON.stringify(result.user)); // 세션 정보를 sessionStorage에 저장
-        } else {
-            alert('로그인 정보가 유효하지 않습니다. 다시 로그인해주세요.');
-            window.location.href = '/login.html'; // 로그인 페이지로 리다이렉트
-        }
-    } catch (error) {
-        console.error('세션 정보를 가져오는 중 오류 발생:', error);
-        alert('서버와의 통신 중 문제가 발생했습니다.');
-    }
-};
-
 // 유효성 검사 함수
 const validateCurrentPassword = () => {
     const currentPasswordInput = document.getElementById("currentPassword");
