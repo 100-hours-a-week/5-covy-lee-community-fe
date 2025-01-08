@@ -22,16 +22,27 @@ const checkSession = async () => {
         const serverUser = data.user; // 서버에서 최신 사용자 데이터
 
         if (serverUser) {
-            // 항상 서버 데이터를 `sessionStorage`에 반영
-            sessionStorage.setItem('user', JSON.stringify({
+            // HTML 디코딩 함수
+            const decodeHtml = (input) => {
+                const txt = document.createElement('textarea');
+                txt.innerHTML = input;
+                return txt.value;
+            };
+
+            // 서버에서 받은 데이터를 디코딩
+            const user = {
                 user_id: serverUser.id,
                 email: serverUser.email,
-                username: serverUser.username,
+                username: decodeHtml(serverUser.username), // username 디코딩
                 image: serverUser.image
-            }));
+            };
 
-            sessionStorage.removeItem('userImage'); // userImage 등 중복 항목 제거
-            console.log('세션 정보가 갱신되었습니다:', serverUser);
+            // 세션 스토리지에 저장
+            sessionStorage.setItem('user', JSON.stringify(user));
+
+            // 중복된 데이터 제거
+            sessionStorage.removeItem('userImage');
+            console.log('세션 정보가 갱신되었습니다:', user);
         } else {
             console.error('No user data in server session.');
             window.location.href = './login.html';
@@ -41,6 +52,7 @@ const checkSession = async () => {
         window.location.href = './login.html';
     }
 };
+
 
 // 페이지가 로드될 때 세션 체크
 window.onload = checkSession;
