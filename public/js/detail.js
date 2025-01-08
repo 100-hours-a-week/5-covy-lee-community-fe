@@ -52,17 +52,25 @@ async function fetchPost() {
         const post = await response.json();
         const currentUser = JSON.parse(sessionStorage.getItem("user")); // 현재 로그인한 사용자 정보
 
+        // HTML 디코딩 함수
+        const decodeHtml = (input) => {
+            const txt = document.createElement("textarea");
+            txt.innerHTML = input;
+            return txt.value;
+        };
+
         // 게시글 정보 렌더링
-        document.getElementById("postTitle").innerText = post.title || "제목 없음";
-        document.getElementById("postContent").innerText = post.content || "내용 없음";
-        document.getElementById("postUsername").innerText = post.author || "작성자 정보 없음";
+        document.getElementById("postTitle").innerText = decodeHtml(post.title || "제목 없음");
+        document.getElementById("postContent").innerText = decodeHtml(post.content || "내용 없음");
+        document.getElementById("postUsername").innerText = decodeHtml(post.author || "작성자 정보 없음");
         document.getElementById("postImage").src = post.image
             ? `${window.API_BASE_URL}/post_images/${post.image}`
             : `${window.API_BASE_URL}/default_images/default_post.jpg`;
         document.getElementById("postComment").innerText = post.comment_count || 0;
         document.getElementById("postLike").innerText = post.like_count || 0;
         document.getElementById("postVisitor").innerText = post.views || 0;
-        console.log("게시글 조회수",post.views);
+
+        console.log("게시글 조회수", post.views);
 
         // 작성자 프로필 이미지 설정
         const profileImage = document.getElementById("postUserProfile");
@@ -87,6 +95,7 @@ async function fetchPost() {
         alert("게시글을 불러오는 데 문제가 발생했습니다.");
     }
 }
+
 
 
 // 좋아요 상태 초기화
@@ -250,6 +259,13 @@ function addCommentToList(comment) {
     const currentUser = JSON.parse(sessionStorage.getItem("user")); // 현재 로그인한 사용자 정보
     const isAuthor = currentUser && currentUser.user_id === comment.author_id; // 작성자인지 확인
 
+    // HTML 디코딩 함수
+    const decodeHtml = (input) => {
+        const txt = document.createElement("textarea");
+        txt.innerHTML = input;
+        return txt.value;
+    };
+
     // 댓글 컨테이너
     const commentDiv = document.createElement("div");
     commentDiv.classList.add("comment");
@@ -280,7 +296,7 @@ function addCommentToList(comment) {
 
     const authorName = document.createElement("div");
     authorName.classList.add("comment-author");
-    authorName.textContent = comment.author || "익명";
+    authorName.textContent = decodeHtml(comment.author || "익명"); // 작성자 이름 디코딩
 
     authorInfoDiv.appendChild(authorImage);
     authorInfoDiv.appendChild(authorName);
@@ -317,10 +333,7 @@ function addCommentToList(comment) {
     // 댓글 내용 (줄바꿈 처리)
     const contentDiv = document.createElement("div");
     contentDiv.classList.add("comment-content");
-    contentDiv.innerHTML = comment.content
-        .replace(/</g, "&lt;") // HTML 태그 이스케이프
-        .replace(/>/g, "&gt;")
-        .replace(/\n/g, "<br>"); // 줄바꿈을 <br>로 변환
+    contentDiv.innerHTML = decodeHtml(comment.content || "내용 없음").replace(/\n/g, "<br>"); // 댓글 내용 디코딩 및 줄바꿈 처리
 
     // 댓글 컨테이너에 요소 추가
     commentDiv.appendChild(commentHeaderDiv);
@@ -328,6 +341,7 @@ function addCommentToList(comment) {
 
     commentList.prepend(commentDiv);
 }
+
 
 
 

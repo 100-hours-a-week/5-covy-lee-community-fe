@@ -65,30 +65,45 @@ document.getElementById("loginForm").addEventListener("submit", async (event) =>
 
     try {
         const response = await fetch(`${window.API_BASE_URL}/api/login`, {
-            method: 'POST',
+            method: "POST",
             headers: {
-                'Content-Type': 'application/json',
+                "Content-Type": "application/json",
             },
-            credentials: 'include',  // 쿠키를 포함하여 서버에 세션 정보 전달
+            credentials: "include", // 쿠키 포함하여 서버에 세션 정보 전달
             body: JSON.stringify({ email, password }),
         });
 
         const data = await response.json();
 
         if (response.ok) {
-            console.log('서버로부터 받은 데이터:', data);
-            sessionStorage.setItem('user', JSON.stringify(data.user));
+            console.log("서버로부터 받은 데이터:", data);
 
-            alert('로그인 성공 ' + data.user.username + "님 반갑습니다!");
-            window.location.href = './community.html';
+            // HTML 디코딩 함수
+            const decodeHtml = (input) => {
+                const txt = document.createElement("textarea");
+                txt.innerHTML = input;
+                return txt.value;
+            };
+
+            // 디코딩된 username 처리
+            const user = {
+                ...data.user,
+                username: decodeHtml(data.user.username), // username 디코딩
+            };
+
+            // 세션 스토리지에 저장
+            sessionStorage.setItem("user", JSON.stringify(user));
+
+            alert("로그인 성공 " + user.username + "님 반갑습니다!");
+            window.location.href = "./community.html";
         } else {
-            alert('로그인 실패: ' + data.message);
+            alert("로그인 실패: " + data.message);
         }
-
     } catch (error) {
-        console.error('오류 발생:', error);
-        alert('서버와의 통신에 문제가 발생했습니다.');
+        console.error("오류 발생:", error);
+        alert("서버와의 통신에 문제가 발생했습니다.");
     }
 });
+
 
 
