@@ -159,7 +159,7 @@ const updatePagination = () => {
         button.innerText = i;
         button.onclick = () => goToPage(i);
         if (i === currentPage) {
-            button.style.backgroundColor = '#666488'; // 현재 페이지 강조
+            button.style.backgroundColor = '#4b280a'; // 현재 페이지 강조
             button.style.color = 'white';
         } else {
             button.style.backgroundColor = '#ccc'; // 나머지 페이지 버튼 색상
