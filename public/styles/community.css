@@ -1,6 +1,6 @@
 body {
     font-family: Arial, sans-serif;
-    background-color: #3d4127; /* 배경색 */
+    background-color: #5B8F90; /* 배경색 */
     min-height: 100vh; /* 최소 높이로 설정 */
     margin: 0;
     overflow-y: hidden; /* 세로 스크롤을 숨기기 */
@@ -125,7 +125,7 @@ header {
 .card h3 {
     margin: 0 0 10px;
     font-size: 18px;
-    color: #4b280a; /* 카드 제목 색상 */
+    color: black; /* 카드 제목 색상 */
 }
 
 .card p {
@@ -257,7 +257,7 @@ header {
 }
 
 .create-post-button {
-    background-color: #c08457; /* 버튼 배경색 */
+    background-color: #BDCEC8; /* 버튼 배경색 */
     color: white; /* 버튼 글자색 */
     border: none;
     border-radius: 20px; /* 둥글게 만들기 */
