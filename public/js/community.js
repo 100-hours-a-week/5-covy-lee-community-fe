@@ -127,7 +127,7 @@ const displayPosts = () => {
                     <span>💬&nbsp;${post.comment_count || 0}</span>
                     <span>👁️&nbsp;${post.views || 0}</span>
                 </div>
-                <p class="date">${formattedDate}</p>
+                
             </div>
             <div class="horizontal-rule"></div>
             <div class="post-info">
@@ -135,6 +135,7 @@ const displayPosts = () => {
                     <img class="author-profile" src="${profileImageUrl}" alt="작성자 이미지">
                     <p class="author">${post.author}</p>
                 </div>
+                <p class="date">${formattedDate}</p>
             </div>
         `;
         cardContainer.appendChild(card);

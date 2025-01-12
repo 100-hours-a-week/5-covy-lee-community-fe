@@ -79,7 +79,7 @@ header {
     height: 1px;
     border: 0;
     background-color: #ccc; /* 줄 색상 */
-    margin: 20px auto;
+    margin: 30px 0;
 }
 
 
@@ -95,7 +95,7 @@ header {
     margin: 20px auto 0;
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 40px;
     padding: 20px;
     background-color: transparent;
     justify-content: flex-start; /* 카드가 상단부터 쌓이도록 */
@@ -107,7 +107,7 @@ header {
 
 .card {
     width: 592px; /* 카드 너비 고정 */
-    height: 120px; /* 카드 높이 고정 */
+    height: 140px; /* 카드 높이 고정 */
     flex: none; /* flexbox 크기 조정 방지 */
     padding: 16px;
     border: 1px solid #ddd;
@@ -117,9 +117,28 @@ header {
 }
 
 .card:hover {
-    transform: translateY(-5px); /* 카드가 위로 약간 이동 */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* 그림자 추가 */
-    background-color: #f8f8ff; /* 약간 다른 배경색으로 변경 */
+    transform: translateY(-8px) scale(1.03); /* 위로 이동 및 확대 */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2); /* 더 강렬한 그림자 */
+    background-color: #f0f8ff; /* 부드러운 색상으로 변경 */
+    color: #000; /* 텍스트 색상 강조 */
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, rgba(255, 255, 255, 0.3), rgba(0, 0, 0, 0.1));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+    border-radius: 10px; /* 그라데이션 레이어도 모서리 둥글게 */
+}
+
+.card:hover::before {
+    opacity: 1; /* 그라데이션 효과 추가 */
 }
 
 .card h3 {
