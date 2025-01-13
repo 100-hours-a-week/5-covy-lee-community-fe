@@ -175,9 +175,11 @@ header {
 }
 
 .card .author {
-    font-size: 14px;
+    font-size: 15px;
     color: #666;
+    font-weight: bold; /* 텍스트를 굵게 만듦 */
 }
+
 
 .card .date {
     font-size: 14px;
