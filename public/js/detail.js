@@ -6,6 +6,14 @@ if (!postId) {
     throw new Error("게시글 ID가 없습니다.");
 }
 
+// HTML 디코딩 함수 (전역 함수)
+function decodeHtml(input) {
+    const txt = document.createElement("textarea");
+    txt.innerHTML = input;
+    return txt.value;
+}
+
+
 initializePage();
 
 async function initializePage() {
@@ -52,14 +60,7 @@ async function fetchPost() {
         const post = await response.json();
         const currentUser = JSON.parse(sessionStorage.getItem("user")); // 현재 로그인한 사용자 정보
 
-        // HTML 디코딩 함수
-        const decodeHtml = (input) => {
-            const txt = document.createElement("textarea");
-            txt.innerHTML = input;
-            return txt.value;
-        };
-
-        // 게시글 정보 렌더링
+        // 게시글 정보 렌더링 (디코딩 적용)
         document.getElementById("postTitle").innerText = decodeHtml(post.title || "제목 없음");
         document.getElementById("postContent").innerText = decodeHtml(post.content || "내용 없음");
         document.getElementById("postUsername").innerText = decodeHtml(post.author || "작성자 정보 없음");
@@ -95,6 +96,7 @@ async function fetchPost() {
         alert("게시글을 불러오는 데 문제가 발생했습니다.");
     }
 }
+
 
 
 
@@ -259,13 +261,6 @@ function addCommentToList(comment) {
     const currentUser = JSON.parse(sessionStorage.getItem("user")); // 현재 로그인한 사용자 정보
     const isAuthor = currentUser && currentUser.user_id === comment.author_id; // 작성자인지 확인
 
-    // HTML 디코딩 함수
-    const decodeHtml = (input) => {
-        const txt = document.createElement("textarea");
-        txt.innerHTML = input;
-        return txt.value;
-    };
-
     // 댓글 컨테이너
     const commentDiv = document.createElement("div");
     commentDiv.classList.add("comment");
@@ -330,10 +325,10 @@ function addCommentToList(comment) {
     commentHeaderDiv.appendChild(dateDiv); // 작성일자
     commentHeaderDiv.appendChild(commentActionsDiv); // 수정/삭제 버튼 (작성자만 추가)
 
-    // 댓글 내용 (줄바꿈 처리)
+    // 댓글 내용 (HTML 태그 무효화 및 줄바꿈 처리)
     const contentDiv = document.createElement("div");
     contentDiv.classList.add("comment-content");
-    contentDiv.innerHTML = decodeHtml(comment.content || "내용 없음").replace(/\n/g, "<br>"); // 댓글 내용 디코딩 및 줄바꿈 처리
+    contentDiv.innerText = decodeHtml(comment.content || "내용 없음"); // HTML 디코딩 및 태그 적용 방지
 
     // 댓글 컨테이너에 요소 추가
     commentDiv.appendChild(commentHeaderDiv);
@@ -345,13 +340,15 @@ function addCommentToList(comment) {
 
 
 
+
+
 // 댓글 수정
 function editComment(commentId) {
     const commentDiv = document.querySelector(`[data-id='${commentId}']`);
     const contentDiv = commentDiv.querySelector(".comment-content");
 
     // 기존 댓글 내용을 가져오면서 <br> 태그를 줄바꿈 문자로 변환
-    const originalContent = contentDiv.innerHTML.replace(/<br>/g, "\n");
+    const originalContent = contentDiv.innerText; // 태그를 디코딩한 상태로 가져옴
 
     // 이미 수정 중인지 확인 후 처리
     const existingEditForm = commentDiv.querySelector(".edit-form");
@@ -369,7 +366,7 @@ function editComment(commentId) {
     // 댓글 입력 폼 생성
     const editForm = document.createElement("textarea");
     editForm.classList.add("edit-form");
-    editForm.value = originalContent; // 줄바꿈이 적용된 원본 내용 설정
+    editForm.value = originalContent; // 디코딩된 텍스트를 그대로 표시
     editForm.rows = 3;
     editForm.style.width = "100%";
     editForm.style.marginBottom = "10px";
@@ -398,7 +395,7 @@ function editComment(commentId) {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 credentials: "include",
-                body: JSON.stringify({ content: newContent }),
+                body: JSON.stringify({ content: newContent }), // 서버로 수정된 텍스트 전송
             });
 
             if (!response.ok) throw new Error("댓글 수정에 실패했습니다.");
@@ -419,6 +416,7 @@ function editComment(commentId) {
         resetButtons(commentDiv); // 버튼 초기화
     };
 }
+
 
 
 // 댓글 삭제

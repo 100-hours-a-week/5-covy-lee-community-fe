@@ -175,9 +175,11 @@ header {
 }
 
 .card .author {
-    font-size: 14px;
+    font-size: 15px;
     color: #666;
+    font-weight: bold; /* 텍스트를 굵게 만듦 */
 }
+
 
 .card .date {
     font-size: 14px;
@@ -186,7 +188,9 @@ header {
 }
 
 
-
+.search-input:focus::placeholder {
+    color: transparent; /* 플레이스홀더 숨김 */
+}
 
 /* 자세히 보기 버튼 스타일 */
 
