@@ -188,7 +188,9 @@ header {
 }
 
 
-
+.search-input:focus::placeholder {
+    color: transparent; /* 플레이스홀더 숨김 */
+}
 
 /* 자세히 보기 버튼 스타일 */
 
