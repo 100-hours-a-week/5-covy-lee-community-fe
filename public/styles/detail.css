@@ -116,26 +116,29 @@ h1#postTitle {
     display: inline-block;
     padding: 5px 10px;
     font-size: 0.9em;
-    color: white;
+    color: black;
     text-decoration: none;
-    border-radius: 5px;
+    border: 1px solid #ccc;    /* 테두리 */
+    border-radius: 4px;
     transition: background-color 0.3s;
 }
 
 .delete-button {
-    background-color: #FFCCE6;
+    background-color: #f0f0f0;
 }
 
 .delete-button:hover {
-    background-color: #FF8E99;
+    background-color: #f8d7da; /* 호버 시 배경색 */
+    color: #721c24;            /* 호버 시 텍스트 색상 */
 }
 
 .edit-button {
-    background-color: #D5C9DD;
+    background-color: #f0f0f0;
 }
 
 .edit-button:hover {
-    background-color: #666488;
+    background-color: #ddd; /* 호버 시 배경색 */
+    border-color: #bbb;     /* 호버 시 테두리 색 */
 }
 
 .horizontal-rule {
@@ -249,7 +252,7 @@ h1#postTitle {
 
 .comment-form button {
     padding: 10px 20px; /* 버튼 크기 조정 */
-    background-color: #D5C9DD; /* 버튼 배경색 */
+    background-color: #BDCEC8; /* 버튼 배경색 */
     color: white; /* 텍스트 색상 */
     border: none; /* 테두리 제거 */
     border-radius: 5px; /* 둥근 테두리 */
@@ -259,7 +262,7 @@ h1#postTitle {
 }
 
 .comment-form button:hover {
-    background-color: #666488; /* 호버 시 색상 */
+    background-color: #767459; /* 호버 시 색상 */
 }
 
 
@@ -275,7 +278,6 @@ h1#postTitle {
     border: 1px solid #ccc;    /* 테두리 */
     border-radius: 4px;        /* 둥근 테두리 */
     padding: 5px 10px;         /* 내부 여백 */
-    margin-left: 5px;          /* 버튼 간 간격 */
     cursor: pointer;           /* 마우스 포인터 변경 */
     transition: background-color 0.3s ease; /* 배경색 변화 효과 */
     font-size: 14px;           /* 폰트 크기 */
