@@ -125,7 +125,7 @@ header {
 
 .card .author {
     font-size: 16px;
-    color: #666;
+    color: black;
     font-weight: bold; /* 텍스트를 굵게 만듦 */
 }
 
