@@ -209,8 +209,8 @@ header {
     height: 40px; /* 버튼의 높이 */
     padding: 0; /* 패딩을 제거하여 원형으로 맞춤 */
     border: none;
-    background-color: #4b280a; /* 페이지 버튼 배경색 */
-    color: white;
+    background-color: #fafad2; /* 페이지 버튼 배경색 */
+    color: black;
     border-radius: 50%; /* 원 모양으로 만들기 */
     cursor: pointer;
     transition: background-color 0.3s;
@@ -220,7 +220,7 @@ header {
 
 
 .pagination button:hover:not(.disabled) {
-    background-color: #4b280a; /* 호버 시 색상 변화 */
+    background-color: #fafad2; /* 호버 시 색상 변화 */
 }
 
 .pagination button.disabled {
