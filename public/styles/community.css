@@ -3,7 +3,6 @@ body {
     background-color: #5B8F90; /* 배경색 */
     min-height: 100vh; /* 최소 높이로 설정 */
     margin: 0;
-    overflow-y: hidden; /* 세로 스크롤을 숨기기 */
 }
 
 
@@ -50,7 +49,6 @@ header {
     justify-content: flex-start; /* 카드가 상단부터 쌓이도록 */
     align-items: center; /* 카드들을 가운데 정렬 */
     max-height: 600px; /* 카드 컨테이너의 최대 높이 설정 */
-    overflow-y: auto; /* 카드가 컨테이너를 넘으면 스크롤이 생기도록 */
 }
 
 
