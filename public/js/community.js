@@ -119,15 +119,18 @@ const displayPosts = () => {
         const createdAt = new Date(post.created_at);
         const formattedDate = `${createdAt.toLocaleDateString()} ${createdAt.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}`;
 
+        // 제목 요소 생성 (innerText 사용)
+        const titleElement = document.createElement('h3');
+        titleElement.innerText = post.title; // 태그 실행 방지, 텍스트로 출력
+
+        // 카드 내용 추가
         card.innerHTML = `
-            <h3>${post.title}</h3>
             <div class="stats-row">
                 <div class="stats">
                     <span>❤️&nbsp;${post.like_count || 0}</span>
                     <span>💬&nbsp;${post.comment_count || 0}</span>
                     <span>👁️&nbsp;${post.views || 0}</span>
                 </div>
-                
             </div>
             <div class="horizontal-rule"></div>
             <div class="post-info">
@@ -138,11 +141,21 @@ const displayPosts = () => {
                 <p class="date">${formattedDate}</p>
             </div>
         `;
+
+        // 카드에 제목 추가
+        card.prepend(titleElement);
+
+        // 카드 컨테이너에 카드 추가
         cardContainer.appendChild(card);
     });
 
     updatePagination();
 };
+
+
+
+
+
 
 // 페이지네이션 업데이트 함수
 const updatePagination = () => {
