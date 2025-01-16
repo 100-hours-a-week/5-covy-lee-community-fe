@@ -475,13 +475,9 @@ async function deletePost() {
 
         if (!response.ok) throw new Error("게시글 삭제에 실패했습니다.");
 
-        // 삭제 성공 메시지 표시
         alert("게시글이 성공적으로 삭제되었습니다.");
 
-        // 삭제 성공 후 페이지 이동
         window.location.href = "./community.html";
-
-        // 강제로 캐시를 무효화하고 새로고침
         window.location.replace("./community.html"); // 캐시 제거 후 페이지 이동
     } catch (error) {
         console.error(error.message);
@@ -490,20 +486,37 @@ async function deletePost() {
 }
 
 
-// 모달 열기/닫기
+// 모달 열기
 function showModal() {
     const modal = document.getElementById("deleteModal");
     modal.classList.add("show"); // 모달 활성화
     modal.style.display = "flex"; // Flexbox 활성화
+
+    // 모달 외부 클릭 시 닫기 이벤트 추가
+    modal.addEventListener("click", handleModalClick);
 }
 
+// 모달 닫기
 function closeModal() {
     const modal = document.getElementById("deleteModal");
     modal.classList.remove("show"); // 모달 비활성화
     modal.style.display = "none"; // Flexbox 비활성화
+
+    // 모달 외부 클릭 이벤트 제거
+    modal.removeEventListener("click", handleModalClick);
 }
 
+// 삭제 확인
 function confirmDelete() {
-    deletePost();
-    closeModal();
+    deletePost(); // 삭제 로직 호출
+    closeModal(); // 모달 닫기
 }
+
+// 모달 외부 클릭 처리 함수
+function handleModalClick(event) {
+    const modalContent = document.querySelector(".modal-content");
+    if (!modalContent.contains(event.target)) {
+        closeModal(); // 모달 외부를 클릭하면 닫기
+    }
+}
+
