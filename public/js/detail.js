@@ -95,7 +95,12 @@ async function fetchPost() {
         }
     } catch (error) {
         console.error(error.message);
-        alert("게시글을 불러오는 데 문제가 발생했습니다.");
+        localStorage.clear(); // 로컬 스토리지 초기화
+        sessionStorage.clear(); // 세션 스토리지 초기화
+
+        // 사용자에게 경고 메시지를 표시하고 로그인 페이지로 리다이렉션
+        alert("게시글을 불러오는 데 문제가 발생했습니다. 다시 로그인해주세요.");
+        window.location.replace("./login.html"); // 로그인 페이지로 이동
     }
 }
 
@@ -211,7 +216,6 @@ async function fetchComments() {
         updateCommentCount();
     } catch (error) {
         console.error("댓글 목록 가져오기 오류:", error.message);
-        alert("댓글 목록을 불러오는 데 문제가 발생했습니다.");
     }
 }
 
