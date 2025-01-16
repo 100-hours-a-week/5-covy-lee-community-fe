@@ -2,9 +2,18 @@ window.addEventListener('DOMContentLoaded', () => {
     const user = sessionStorage.getItem('user'); // 세션스토리지에서 유저 정보 가져오기
     if (!user) {
         alert('로그인이 필요합니다.');
+        // 뒤로가기 방지를 위해 브라우저 히스토리를 조작
         window.location.replace('./login.html'); // 로그인 페이지로 리다이렉트
+        history.pushState(null, '', './login.html'); // 히스토리 스택 수정
     }
 });
+
+// 뒤로가기 방지 이벤트 추가
+window.addEventListener('popstate', (event) => {
+    alert('로그인이 필요합니다.');
+    window.location.replace('./login.html');
+});
+
 
 
 document.addEventListener('DOMContentLoaded', function() {

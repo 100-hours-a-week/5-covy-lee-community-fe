@@ -330,9 +330,6 @@ h1#postTitle {
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
 }
 
-.modal-content p {
-    margin: 0 auto;
-}
 
 .close {
     cursor: pointer;

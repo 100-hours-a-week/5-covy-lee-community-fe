@@ -3,7 +3,9 @@ const postId = params.get("id"); // 게시글 ID
 
 if (!postId) {
     alert("게시글 ID가 필요합니다.");
-    throw new Error("게시글 ID가 없습니다.");
+    // community.html로 히스토리 교체
+    history.replaceState(null, '', './community.html');
+    window.location.href = './community.html';
 }
 
 // HTML 디코딩 함수 (전역 함수)
