@@ -230,34 +230,41 @@ const validateUsername = async () => {
 
 
 
-const checkFormValidity = async () => {
-    const isEmailValid = validateEmail() && await validateEmailDuplication(); // 이메일 중복 검사 포함
-    const isPasswordValid = validatePassword();
-    const isPasswordMatch = validatePasswordMatch();
-    const isUsernameValid = await validateUsername();
+const checkFormValidity = async (changedField) => {
+    let isEmailValid = true;
+    let isPasswordValid = true;
+    let isPasswordMatch = true;
+    let isUsernameValid = true;
 
-    const formIsValid = isEmailValid && isPasswordValid && isPasswordMatch && isUsernameValid;
+    if (changedField === "email") {
+        isEmailValid = validateEmail() && (await validateEmailDuplication());
+    } else if (changedField === "password") {
+        isPasswordValid = validatePassword();
+        isPasswordMatch = validatePasswordMatch();
+    } else if (changedField === "passwordCheck") {
+        isPasswordMatch = validatePasswordMatch();
+    } else if (changedField === "username") {
+        isUsernameValid = await validateUsername();
+    }
+
+    const formIsValid =
+        isEmailValid && isPasswordValid && isPasswordMatch && isUsernameValid;
 
     signupButton.disabled = !formIsValid;
     signupButton.classList.toggle("active", formIsValid);
 };
 
-// 이벤트 리스너
-emailInput.addEventListener("input", () => {
-    validateEmail();
-    validateEmailDuplication();
-    checkFormValidity();
+
+emailInput.addEventListener("input", async () => {
+    await checkFormValidity("email");
 });
 passwordInput.addEventListener("input", () => {
-    validatePassword();
-    validatePasswordMatch();
-    checkFormValidity();
+    checkFormValidity("password");
 });
 passwordCheckInput.addEventListener("input", () => {
-    validatePasswordMatch();
-    checkFormValidity();
+    checkFormValidity("passwordCheck");
 });
-usernameInput.addEventListener("input", () => {
-    validateUsername();
-    checkFormValidity();
+usernameInput.addEventListener("input", async () => {
+    await checkFormValidity("username");
 });
+
