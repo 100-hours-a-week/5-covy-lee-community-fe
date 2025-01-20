@@ -8,11 +8,6 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// 뒤로가기 방지 이벤트 추가
-window.addEventListener('popstate', (event) => {
-    alert('로그인이 필요합니다.');
-    window.location.replace('./login.html');
-});
 
 
 
