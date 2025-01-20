@@ -73,13 +73,15 @@ const previewImage = (event) => {
 // 유효성 검사
 const validateEmail = () => {
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const emailValue = emailInput.value;
+    const emailValue = emailInput.value.trim(); // 앞뒤 공백 제거
 
     if (emailValue === "") {
         emailError.style.display = "none";
         return false;
     }
     if (!emailPattern.test(emailValue)) {
+        emailError.textContent = "유효한 이메일 형식을 입력해주세요.";
+        emailError.style.color = "red";
         emailError.style.display = "block";
         return false;
     }
@@ -90,29 +92,18 @@ const validateEmail = () => {
 let emailDebounceTimeout;
 
 const validateEmailDuplication = async () => {
-    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    const emailValue = emailInput.value.trim(); // 앞뒤 공백 제거
+    const emailValue = emailInput.value.trim();
 
     // 이메일 입력란이 비어 있는 경우 메시지 숨기기
     if (emailValue === "") {
-        clearTimeout(emailDebounceTimeout); // 이전 타임아웃 초기화
-        emailError.textContent = ""; // 메시지 초기화
-        emailError.style.display = "none"; // 메시지 숨김
-        return false;
-    }
-
-    // 이메일 형식 확인
-    if (!emailPattern.test(emailValue)) {
-        clearTimeout(emailDebounceTimeout); // 이전 타임아웃 초기화
-        emailError.textContent = "유효한 이메일 형식을 입력해주세요.";
-        emailError.style.color = "red";
-        emailError.style.display = "block";
+        clearTimeout(emailDebounceTimeout);
+        emailError.textContent = "";
+        emailError.style.display = "none";
         return false;
     }
 
     clearTimeout(emailDebounceTimeout);
 
-    // 중복 검사 API 요청
     return new Promise((resolve) => {
         emailDebounceTimeout = setTimeout(async () => {
             try {
@@ -228,43 +219,56 @@ const validateUsername = async () => {
     });
 };
 
+// 필드별 유효성 상태를 저장할 객체
+const fieldValidity = {
+    email: false,
+    password: false,
+    passwordMatch: false,
+    username: false,
+};
 
-
-const checkFormValidity = async (changedField) => {
-    let isEmailValid = true;
-    let isPasswordValid = true;
-    let isPasswordMatch = true;
-    let isUsernameValid = true;
-
-    if (changedField === "email") {
-        isEmailValid = validateEmail() && (await validateEmailDuplication());
-    } else if (changedField === "password") {
-        isPasswordValid = validatePassword();
-        isPasswordMatch = validatePasswordMatch();
-    } else if (changedField === "passwordCheck") {
-        isPasswordMatch = validatePasswordMatch();
-    } else if (changedField === "username") {
-        isUsernameValid = await validateUsername();
+// 폼 유효성 검사 및 버튼 활성화
+const checkFormValidity = async (field = "") => {
+    if (field === "email" || field === "") {
+        const isEmailValid = validateEmail() && await validateEmailDuplication();
+        fieldValidity.email = isEmailValid;
     }
 
-    const formIsValid =
-        isEmailValid && isPasswordValid && isPasswordMatch && isUsernameValid;
+    if (field === "password" || field === "") {
+        fieldValidity.password = validatePassword();
+        fieldValidity.passwordMatch = validatePasswordMatch();
+    }
 
+    if (field === "passwordCheck" || field === "") {
+        fieldValidity.passwordMatch = validatePasswordMatch();
+    }
+
+    if (field === "username" || field === "") {
+        fieldValidity.username = await validateUsername();
+    }
+
+    // 모든 필드가 유효한 경우 버튼 활성화
+    const formIsValid = Object.values(fieldValidity).every((isValid) => isValid);
     signupButton.disabled = !formIsValid;
     signupButton.classList.toggle("active", formIsValid);
 };
 
-
+// 이벤트 리스너
 emailInput.addEventListener("input", async () => {
+    validateEmail();
+    await validateEmailDuplication();
     await checkFormValidity("email");
 });
-passwordInput.addEventListener("input", () => {
-    checkFormValidity("password");
+passwordInput.addEventListener("input", async () => {
+    validatePassword();
+    validatePasswordMatch();
+    await checkFormValidity("password");
 });
-passwordCheckInput.addEventListener("input", () => {
-    checkFormValidity("passwordCheck");
+passwordCheckInput.addEventListener("input", async () => {
+    validatePasswordMatch();
+    await checkFormValidity("passwordCheck");
 });
 usernameInput.addEventListener("input", async () => {
+    await validateUsername();
     await checkFormValidity("username");
 });
-

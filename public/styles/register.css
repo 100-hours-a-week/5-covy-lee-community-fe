@@ -73,7 +73,7 @@ input[type="text"] {
 
 .circle {
     border-radius: 50%;
-    background-color: #D5C9DD;
+    background-color: #BDCEC8;
     width: 100px;
     height: 100px;
     display: flex;
@@ -89,7 +89,7 @@ input[type="text"] {
 .circle:hover {
     cursor: pointer; /* 마우스 포인터 변경 */
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* 살짝 강조 효과 */
-    background-color: #b3a4bd; /* 배경색 약간 변경 */
+    background-color: #767459; /* 배경색 약간 변경 */
 }
 
 /* 호버 시 텍스트 색상 변경 */
@@ -114,7 +114,7 @@ input[type="text"] {
 }
 
 #signupButton {
-    background-color: #D5C9DD;
+    background-color: #BDCEC8;
     color: white;
     border: none;
     padding: 10px;
@@ -122,8 +122,8 @@ input[type="text"] {
     cursor: not-allowed;
 }
 /* 버튼 활성화 스타일 */
-#signupButton.active {
-    background-color: #666488;
+#signupButton.active{
+    background-color: #767459;
     cursor: pointer;
 }
 
