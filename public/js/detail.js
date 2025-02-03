@@ -127,7 +127,7 @@ async function initializeLikeStatus() {
     }
 }
 
-// 좋아요 토글
+// 좋아요 토글 +
 document.getElementById("likeButton").addEventListener("click", async () => {
     try {
         const response = await fetch(`${window.API_BASE_URL}/api/posts/${postId}/like`, {
