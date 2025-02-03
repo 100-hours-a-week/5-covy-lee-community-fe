@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const profileImage = document.getElementById('profileImage');
                 if (profileImage) {
                     profileImage.src = userImage ?
-                        `${window.API_BASE_URL}/profile_images/${userImage}` :
+                        `${userImage}` :
                         `${window.API_BASE_URL}/default_images/default_profile.webp`;
                 }
 

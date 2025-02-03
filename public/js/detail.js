@@ -67,7 +67,7 @@ async function fetchPost() {
         document.getElementById("postContent").innerText = decodeHtml(post.content || "내용 없음");
         document.getElementById("postUsername").innerText = decodeHtml(post.author || "작성자 정보 없음");
         document.getElementById("postImage").src = post.image
-            ? `${window.API_BASE_URL}/post_images/${post.image}`
+            ? `${post.image}`
             : `${window.API_BASE_URL}/default_images/default_post.jpg`;
         document.getElementById("postComment").innerText = post.comment_count || 0;
         document.getElementById("postLike").innerText = post.like_count || 0;
@@ -78,7 +78,7 @@ async function fetchPost() {
         // 작성자 프로필 이미지 설정
         const profileImage = document.getElementById("postUserProfile");
         profileImage.src = post.author_image
-            ? `${window.API_BASE_URL}/profile_images/${post.author_image}`
+            ? `${post.author_image}`
             : `${window.API_BASE_URL}/default_images/default_profile.webp`;
 
         // 작성자인 경우에만 수정/삭제 버튼 표시
@@ -127,7 +127,7 @@ async function initializeLikeStatus() {
     }
 }
 
-// 좋아요 토글
+// 좋아요 토글 +
 document.getElementById("likeButton").addEventListener("click", async () => {
     try {
         const response = await fetch(`${window.API_BASE_URL}/api/posts/${postId}/like`, {

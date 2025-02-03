@@ -10,7 +10,7 @@ window.onload = () => {
     const userEmail = user.email || "user@example.com";
     const userName = user.username || "기본 이름";
     const userImage = user.image
-        ? `${window.API_BASE_URL}/profile_images/${user.image}`
+        ? `${user.image}`
         : `${window.API_BASE_URL}/default_images/default_profile.webp`;
 
     document.getElementById('emailDisplay').innerText = userEmail;
