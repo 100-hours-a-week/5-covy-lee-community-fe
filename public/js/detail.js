@@ -67,7 +67,7 @@ async function fetchPost() {
         document.getElementById("postContent").innerText = decodeHtml(post.content || "내용 없음");
         document.getElementById("postUsername").innerText = decodeHtml(post.author || "작성자 정보 없음");
         document.getElementById("postImage").src = post.image
-            ? `${window.API_BASE_URL}/post_images/${post.image}`
+            ? `${post.image}`
             : `${window.API_BASE_URL}/default_images/default_post.jpg`;
         document.getElementById("postComment").innerText = post.comment_count || 0;
         document.getElementById("postLike").innerText = post.like_count || 0;
