@@ -108,7 +108,7 @@ const displayPosts = () => {
 
     postsToDisplay.forEach(post => {
         const profileImageUrl = post.author_image
-            ? `${window.API_BASE_URL}/profile_images/${post.author_image}`
+            ? `${post.author_image}`
             : `${window.API_BASE_URL}/default_images/default_profile.webp`; // 기본 이미지 경로
 
         const card = document.createElement('div');

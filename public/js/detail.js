@@ -78,7 +78,7 @@ async function fetchPost() {
         // 작성자 프로필 이미지 설정
         const profileImage = document.getElementById("postUserProfile");
         profileImage.src = post.author_image
-            ? `${window.API_BASE_URL}/profile_images/${post.author_image}`
+            ? `${post.author_image}`
             : `${window.API_BASE_URL}/default_images/default_profile.webp`;
 
         // 작성자인 경우에만 수정/삭제 버튼 표시
