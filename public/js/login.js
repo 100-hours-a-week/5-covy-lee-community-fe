@@ -105,5 +105,40 @@ document.getElementById("loginForm").addEventListener("submit", async (event) =>
     }
 });
 
+document.addEventListener("DOMContentLoaded", function () {
+    const kakaoLoginBtn = document.getElementById("kakaoLogin");
 
+    // ✅ 1. 카카오 로그인 버튼 클릭 → 로그인 URL 요청 → 이동
+    kakaoLoginBtn.addEventListener("click", function (event) {
+        event.preventDefault(); // 기본 동작 방지
 
+        fetch("http://localhost:3000/oauth/kakao")
+            .then(response => response.text()) // 로그인 URL 받아오기
+            .then(kakaoLoginUrl => {
+                window.location.href = kakaoLoginUrl; // 카카오 로그인 페이지로 이동
+            })
+            .catch(error => console.error("카카오 로그인 요청 실패:", error));
+    });
+
+    // ✅ 2. 로그인 성공 후 URL에서 토큰 가져오기
+    const urlParams = new URLSearchParams(window.location.search);
+    const accessToken = urlParams.get("token");
+
+    if (accessToken) {
+        console.log("🔑 Access Token:", accessToken); // 디버깅용
+
+        // ✅ 3. 백엔드에 사용자 정보 요청
+        fetch(`http://localhost:3000/oauth/kakao/userinfo?token=${accessToken}`)
+            .then(response => response.json())
+            .then(userInfo => {
+                console.log("👤 User Info:", userInfo);
+                alert(`환영합니다, ${userInfo.nickname}! 🎉`);
+
+                // ✅ 4. 닉네임과 프로필 이미지를 화면에 표시
+                document.getElementById("userNickname").textContent = userInfo.nickname;
+                document.getElementById("userProfileImage").src = userInfo.profile_image;
+                document.getElementById("userProfileImage").style.display = "block";
+            })
+            .catch(error => console.error("사용자 정보 요청 실패:", error));
+    }
+});

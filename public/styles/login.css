@@ -87,3 +87,14 @@ button {
     color: black; /* 호버 시 진한 회색으로 변경 */
 }
 
+#kakaoLogin {
+    display: block;
+    text-align: center; /* 중앙 정렬 */
+    margin-top: 10px; /* 로그인 버튼과 10px 간격 유지 */
+}
+
+#kakaoLogin img {
+    max-width: 300px; /* 버튼 크기 제한 */
+}
+
+

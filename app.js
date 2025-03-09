@@ -16,6 +16,14 @@ app.get('/api', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'community.html'));
 });
 
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'community.html'));
+});
+
+app.get('/kakao-login-success', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'kakao-login-success.html'));
+});
+
 app.listen(PORT, () => {
     console.log(`서버가 http://localhost:${PORT} 에서 실행 중입니다.`);
 });
