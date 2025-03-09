@@ -105,5 +105,19 @@ document.getElementById("loginForm").addEventListener("submit", async (event) =>
     }
 });
 
+document.getElementById("kakaoLogin")?.addEventListener("click", async (event) => {
+    event.preventDefault();
 
-
+    try {
+        const response = await fetch("http://localhost:3000/api/oauth/kakao", {
+            credentials: "include" // 필요 시 쿠키를 포함하여 요청
+        });
+        if (!response.ok) {
+            throw new Error(`네트워크 오류: ${response.statusText}`);
+        }
+        const kakaoLoginUrl = await response.text();
+        window.location.href = kakaoLoginUrl; // 받아온 URL로 이동
+    } catch (error) {
+        console.error("❌ 카카오 로그인 요청 실패:", error);
+    }
+});

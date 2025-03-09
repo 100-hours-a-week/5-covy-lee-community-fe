@@ -1,7 +1,30 @@
-window.onload = () => {
-    const user = JSON.parse(sessionStorage.getItem('user')) || {};
-    console.log(user);
+window.addEventListener('DOMContentLoaded', async () => {
+    try {
+        // 서버에서 사용자 정보 재요청
+        const response = await fetch(`${window.API_BASE_URL}/api/me`, {
+            method: 'GET',
+            credentials: 'include' // 쿠키를 포함하여 요청
+        });
+        if (!response.ok) {
+            throw new Error(`API 호출 실패: ${response.statusText}`);
+        }
+        const data = await response.json();
+        if (!data.user) {
+            throw new Error('사용자 정보가 없습니다.');
+        }
+        // sessionStorage에 사용자 정보 저장
+        sessionStorage.setItem('user', JSON.stringify(data.user));
+        displayUserInfo();
+    } catch (error) {
+        console.error('API /api/me 호출 중 에러:', error.message);
+        alert('세션 정보가 없습니다!');
+        window.location.replace('./login.html');
+    }
+});
 
+function displayUserInfo() {
+    const user = JSON.parse(sessionStorage.getItem('user')) || {};
+    // 사용자 정보가 없으면 경고 후 종료
     if (!user.user_id) {
         alert('세션 정보가 없습니다!');
         return;
@@ -19,7 +42,8 @@ window.onload = () => {
     const previewImage = document.getElementById('preview');
     previewImage.src = userImage;
     previewImage.style.display = userImage ? 'block' : 'none';
-};
+}
+
 
 // 토스트 메시지 표시 함수
 const showToast = (message) => {

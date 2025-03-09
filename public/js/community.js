@@ -7,7 +7,7 @@ let filteredPosts = []; // 필터된 게시글을 저장할 변수
 
 const checkSession = async () => {
     try {
-        const response = await fetch(`${window.API_BASE_URL}/api/check-session`, {
+        const response = await fetch(`${window.API_BASE_URL}/api/me`, {
             method: 'GET',
             credentials: 'include'
         });
