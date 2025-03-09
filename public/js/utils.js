@@ -1,12 +1,39 @@
-window.addEventListener('DOMContentLoaded', () => {
-    const user = sessionStorage.getItem('user'); // 세션스토리지에서 유저 정보 가져오기
+window.addEventListener('DOMContentLoaded', async () => {
+    try {
+        // API 호출로 세션에 저장된 사용자 정보 가져오기
+        const response = await fetch(`${window.API_BASE_URL}/api/me`, {
+            method: 'GET',
+            credentials: 'include' // 쿠키 포함
+        });
+        if (!response.ok) {
+            throw new Error(`API 호출 실패: ${response.statusText}`);
+        }
+        const data = await response.json();
+
+        // 서버에서 반환한 데이터에 user 정보가 있을 경우 sessionStorage에 저장
+        if (data.user) {
+            sessionStorage.setItem('user', JSON.stringify(data.user));
+            console.log('세션 스토리지에 사용자 정보 저장 완료:', data.user);
+        } else {
+            throw new Error('사용자 정보가 존재하지 않습니다.');
+        }
+    } catch (error) {
+        console.error('API /api/me 호출 중 에러:', error.message);
+        alert('로그인이 필요합니다.');
+        window.location.replace('./login.html');
+        history.pushState(null, '', './login.html');
+        return;
+    }
+
+    // API 호출 후 sessionStorage에 user 정보가 저장되었는지 확인
+    const user = sessionStorage.getItem('user');
     if (!user) {
         alert('로그인이 필요합니다.');
-        // 뒤로가기 방지를 위해 브라우저 히스토리를 조작
-        window.location.replace('./login.html'); // 로그인 페이지로 리다이렉트
-        history.pushState(null, '', './login.html'); // 히스토리 스택 수정
+        window.location.replace('./login.html');
+        history.pushState(null, '', './login.html');
     }
 });
+
 
 
 

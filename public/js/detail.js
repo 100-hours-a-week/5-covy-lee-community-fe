@@ -1,3 +1,5 @@
+
+
 const params = new URLSearchParams(window.location.search);
 const postId = params.get("id"); // 게시글 ID
 
